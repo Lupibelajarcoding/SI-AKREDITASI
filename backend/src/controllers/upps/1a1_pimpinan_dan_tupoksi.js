@@ -3,10 +3,10 @@ const ExcelJS = require('exceljs');
 
 /**
  * Controller untuk Tabel 1.A.1 Pimpinan dan Tupoksi
- * Memenuhi IKU: RESTful API & Engine Kalkulasi
+ * Update: Menghapus dependensi id_jafung dari input (Otomatis via Relasi Pegawai)
  */
 const controller1a1 = {
-    // 1. READ: Ambil semua data pimpinan
+    // 1. READ: Ambil semua data pimpinan aktif
     index: async (req, res) => {
         try {
             const data = await Model1a1.findAll();
@@ -16,17 +16,17 @@ const controller1a1 = {
                 data: data
             });
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ success: false, message: "Terjadi kesalahan server" });
+            console.error("DEBUG 1A1 INDEX:", error.message);
+            res.status(500).json({ success: false, message: "Terjadi kesalahan server saat memuat dashboard" });
         }
     },
 
-    // 2. CREATE: Simpan data dengan auto-SKS
+    // 2. CREATE: Simpan data dengan auto-SKS & Auto-Jafung
     store: async (req, res) => {
         try {
-            const { id_pegawai, periode_mulai, periode_selesai, tupoksi, id_jafung } = req.body;
+            const { id_pegawai, periode_mulai, periode_selesai, tupoksi } = req.body;
 
-            // Engine Kalkulasi: Cari pakem SKS secara otomatis berdasarkan Jabatan + Unit
+            // Engine Kalkulasi: Cari pakem SKS secara otomatis berdasarkan Jabatan + Unit di data Pegawai
             const autoSks = await Model1a1.findAutoSks(id_pegawai);
 
             const dataToSave = {
@@ -34,30 +34,29 @@ const controller1a1 = {
                 periode_mulai,
                 periode_selesai,
                 tupoksi,
-                sks_jabatan: autoSks, // Hasil snapshot otomatis
-                id_jafung,
-                created_by: req.user.id_user // Diambil dari JWT Token
+                sks_jabatan: autoSks, // Hasil deteksi otomatis
+                created_by: req.user.id_user 
             };
 
             await Model1a1.create(dataToSave);
             res.status(201).json({
                 success: true,
                 message: "Data Pimpinan berhasil ditambahkan",
-                detail: `SKS Jabatan otomatis terdeteksi: ${autoSks}`
+                detail: `SKS Jabatan otomatis terdeteksi: ${autoSks}. Jabatan Fungsional terhubung otomatis.`
             });
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ success: false, message: "Gagal menyimpan data" });
+            console.error("DEBUG 1A1 STORE:", error.message);
+            res.status(500).json({ success: false, message: "Gagal menyimpan data pimpinan" });
         }
     },
 
-    // 3. UPDATE: Perbarui data (Termasuk hitung ulang SKS jika id_pegawai berubah)
+    // 3. UPDATE: Perbarui data
     update: async (req, res) => {
         try {
             const { id } = req.params;
             const { id_pegawai } = req.body;
 
-            // Hitung ulang SKS untuk memastikan integritas data jika pegawai berubah
+            // Hitung ulang SKS jika pegawai berubah
             const autoSks = await Model1a1.findAutoSks(id_pegawai);
 
             const dataToUpdate = {
@@ -67,141 +66,119 @@ const controller1a1 = {
             };
 
             await Model1a1.update(id, dataToUpdate);
-            res.status(200).json({ success: true, message: "Data berhasil diperbarui" });
+            res.status(200).json({ success: true, message: "Data pimpinan berhasil diperbarui" });
         } catch (error) {
+            console.error("DEBUG 1A1 UPDATE:", error.message);
             res.status(500).json({ success: false, message: error.message });
         }
     },
 
-    // 4. DELETE: Soft Delete data pimpinan
+    // 4. DELETE: Soft Delete
     destroy: async (req, res) => {
         try {
             const { id } = req.params;
             await Model1a1.softDelete(id, req.user.id_user);
-            res.status(200).json({ success: true, message: "Data berhasil dihapus (Soft Delete)" });
+            res.status(200).json({ success: true, message: "Data dipindahkan ke sampah" });
         } catch (error) {
             res.status(500).json({ success: false, message: "Gagal menghapus data" });
         }
     },
 
-    hardDestroy: async (req, res) => {
-        try {
-            const { id } = req.params;
-            await Model1a1.hardDelete(id);
-            res.status(200).json({ success: true, message: "Data pimpinan hangus permanen!" });
-        } catch (error) {
-            res.status(500).json({ success: false, message: error.message });
-        }
-    },
-
+    // 5. TRASH: Lihat data terhapus
     trash: async (req, res) => {
         try {
             const data = await Model1a1.findDeleted();
-            res.status(200).json({
-                success: true,
-                message: "Data Tabel 1.A.1 Terhapus (Sampah) Berhasil Diambil",
-                data: data
-            });
+            res.status(200).json({ success: true, data });
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ success: false, message: "Terjadi kesalahan server" });
+            res.status(500).json({ success: false, message: "Gagal memuat sampah" });
         }
     },
 
+    // 6. RESTORE: Pulihkan data
     restore: async (req, res) => {
         try {
             const { id } = req.params;
-            const [result] = await Model1a1.restore(id);
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ success: false, message: "Data tidak ditemukan atau belum dihapus." });
-            }
+            await Model1a1.restore(id);
             res.status(200).json({ success: true, message: "Data pimpinan berhasil dipulihkan!" });
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
         }
     },
 
+    // 7. HARD DELETE
+    hardDestroy: async (req, res) => {
+        try {
+            const { id } = req.params;
+            await Model1a1.hardDelete(id);
+            res.status(200).json({ success: true, message: "Data dihapus permanen" });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    },
+
+    // 8. EXPORT EXCEL: Format Standar LKPS
     exportExcel: async (req, res) => {
         try {
             const data = await Model1a1.findAll();
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet('Tabel 1.A.1');
 
-            // 1. TAMBAHKAN JUDUL (Baris 1)
+            // Judul Baris 1
             worksheet.mergeCells('A1:F1');
             const titleRow = worksheet.getRow(1);
             titleRow.getCell(1).value = 'Tabel 1.A.1 Tabel Pimpinan dan Tupoksi UPPS dan PS';
             titleRow.getCell(1).font = { bold: true, size: 12 };
             titleRow.getCell(1).alignment = { horizontal: 'center' };
 
-            // 2. DEFINISI HEADER (Baris 2)
-            // Kita set kolom dulu, tapi headernya nanti kita timpa manual buat styling
-            worksheet.getRow(2).values = ['Unit Kerja', 'Nama Ketua', 'Periode Jabatan', 'Pendidikan Terakhir', 'Jabatan Fungsional', 'Tugas Pokok dan Fungsi'];
-            
-            worksheet.columns = [
-                { key: 'nama_unit', width: 20 },
-                { key: 'nama_lengkap', width: 30 },
-                { key: 'periode', width: 20 },
-                { key: 'pendidikan_terakhir', width: 20 },
-                { key: 'nama_jafung', width: 25 },
-                { key: 'tupoksi', width: 50 }
+            // Header Baris 2 (Warna Abu-abu #BFBFBF)
+            const headerRow = worksheet.getRow(2);
+            headerRow.values = [
+                'Unit Kerja', 
+                'Nama Ketua', 
+                'Periode Jabatan', 
+                'Pendidikan Terakhir', 
+                'Jabatan Fungsional', 
+                'Tugas Pokok dan Fungsi'
             ];
+            
+            headerRow.eachCell((cell) => {
+                cell.font = { bold: true };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'BFBFBF' } };
+                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+            });
 
-            // 3. TAMBAHKAN DATA (Mulai Baris 3)
+            // Data Baris 3 dst (Warna Kuning #FFFF00)
             data.forEach(item => {
-                worksheet.addRow({
-                    nama_unit: item.nama_unit_display,
-                    nama_lengkap: item.nama_lengkap,
-                    periode: `${item.periode_mulai} - ${item.periode_selesai}`,
-                    pendidikan_terakhir: item.pendidikan_terakhir,
-                    nama_jafung: item.nama_jafung || '-',
-                    tupoksi: item.tupoksi
+                const row = worksheet.addRow([
+                    item.nama_unit_display,
+                    item.nama_lengkap,
+                    `${item.periode_mulai} - ${item.periode_selesai}`,
+                    item.pendidikan_terakhir,
+                    item.nama_jafung, // Sudah otomatis dari relasi
+                    item.tupoksi
+                ]);
+
+                row.eachCell((cell) => {
+                    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+                    cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+                    cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
                 });
             });
 
-            // 4. STYLING SESUAI GAMBAR
-            
-            // --- Style Header (Baris 2) --- Warna Abu-abu
-            const headerRow = worksheet.getRow(2);
-            headerRow.eachCell((cell) => {
-                cell.font = { bold: true };
-                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'BFBFBF' } }; // Abu-abu gelap sesuai gambar
-                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
-                cell.border = {
-                    top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' }
-                };
-            });
+            worksheet.columns = [
+                { width: 25 }, { width: 35 }, { width: 25 }, 
+                { width: 20 }, { width: 30 }, { width: 55 }
+            ];
 
-            // --- Style Body (Baris 3 dst) --- Warna Kuning
-            worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-                if (rowNumber > 2) { // Melewati Judul dan Header
-                    row.eachCell((cell) => {
-                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } }; // KUNING MENYALA BOS
-                        cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
-                        cell.border = {
-                            top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' }
-                        };
-                    });
-                }
-            });
-
-            // 5. TAMBAHKAN KETERANGAN (Di baris paling bawah)
-            const lastRow = worksheet.lastRow.number + 1;
-            worksheet.mergeCells(`A${lastRow}:F${lastRow}`);
-            const footerRow = worksheet.getRow(lastRow);
-            footerRow.getCell(1).value = 'Keterangan: Data yang ditulis dalam tabel ini termasuk Unit Penjaminan Mutu';
-            footerRow.getCell(1).font = { italic: false, size: 10 };
-            footerRow.getCell(1).alignment = { horizontal: 'left' };
-
-            // 6. PROSES DOWNLOAD
             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            res.setHeader('Content-Disposition', 'attachment; filename=Tabel_1A1_Pimpinan.xlsx');
+            res.setHeader('Content-Disposition', 'attachment; filename=Tabel_1A1_LKPS.xlsx');
             
             await workbook.xlsx.write(res);
             res.end();
 
         } catch (error) {
-            console.error(error);
+            console.error("DEBUG EXPORT 1A1:", error.message);
             res.status(500).json({ success: false, message: "Gagal ekspor ke Excel" });
         }
     }

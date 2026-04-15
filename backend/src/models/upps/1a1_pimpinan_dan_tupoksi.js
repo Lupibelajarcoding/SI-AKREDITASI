@@ -2,13 +2,12 @@ const db = require('../../config/db');
 
 /**
  * Model untuk Tabel 1.A.1 Pimpinan dan Tupoksi
- * Memenuhi IKU: Rancangan Skema Database & IKT: Optimasi Query
+ * Menggunakan relasi Pegawai untuk deteksi otomatis Jafung Dosen/Tendik
  */
 const Model1a1 = {
     /**
      * Engine Kalkulasi SKS Otomatis
-     * Mencari SKS berdasarkan kombinasi Jabatan (Ketua/Staff) + Nama Unit
-     * Memenuhi IKU: Engine Kalkulasi Server-Side
+     * Mencari SKS berdasarkan kombinasi Jabatan Struktural + Nama Unit Kerja
      */
     findAutoSks: async (id_pegawai) => {
         const sql = `
@@ -24,30 +23,28 @@ const Model1a1 = {
     },
 
     /**
-     * READ: Ambil Semua Data untuk Dashboard & Export Excel
-     * Melakukan JOIN ke 4 tabel untuk data lengkap sesuai Instrumen LKPS [cite: 102]
+     * READ: Ambil Semua Data Aktif
+     * Melakukan LEFT JOIN ke tabel dosen & jafung untuk deteksi otomatis status akademik
      */
     findAll: async () => {
         const sql = `
             SELECT 
                 t.id_pimpinan,
-                -- LOGIKA: Jika unit = 'PRODI', gabungkan dengan nama dari tabel prodi.
-                -- Jika bukan, tampilkan nama unit aslinya saja.
                 IF(uk.nama_unit = 'PRODI', CONCAT('PRODI ', pr.nama_prodi), uk.nama_unit) AS nama_unit_display,
                 p.nama_lengkap,
                 t.periode_mulai,
                 t.periode_selesai,
                 p.pendidikan_terakhir,
-                jf.nama_jafung,
+                -- Dinamis: Jika data di tabel dosen ada, ambil jafung. Jika tidak, anggap Tendik/Non-Jafung.
+                COALESCE(jf.nama_jafung, 'Tenaga Kependidikan / Non-Jafung') AS nama_jafung,
                 t.tupoksi,
                 t.sks_jabatan
             FROM 1a1_pimpinan_dan_tupoksi t
             JOIN pegawai p ON t.id_pegawai = p.id_pegawai
             JOIN unit_kerja uk ON p.id_unit = uk.id_unit
-            -- Jalur ke tabel prodi melalui tabel dosen
             LEFT JOIN dosen d ON p.id_pegawai = d.id_pegawai
             LEFT JOIN prodi pr ON d.id_prodi = pr.id_prodi
-            LEFT JOIN jabatan_fungsional jf ON t.id_jafung = jf.id_jafung
+            LEFT JOIN jabatan_fungsional jf ON d.id_jabatan_fungsional = jf.id_jafung
             WHERE t.deleted_at IS NULL
             ORDER BY t.created_at DESC
         `;
@@ -56,22 +53,21 @@ const Model1a1 = {
     },
 
     /**
-     * CREATE: Simpan Data Pimpinan Baru
-     * Memenuhi IKU: Integritas Data & Error Handling
+     * CREATE: Simpan Data Pimpinan
+     * id_jafung dihapus dari parameter karena sudah mengikuti data master Pegawai/Dosen
      */
     create: async (data) => {
         const sql = `
             INSERT INTO 1a1_pimpinan_dan_tupoksi 
-            (id_pegawai, periode_mulai, periode_selesai, tupoksi, sks_jabatan, id_jafung, created_by) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (id_pegawai, periode_mulai, periode_selesai, tupoksi, sks_jabatan, created_by) 
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
         const params = [
             data.id_pegawai, 
             data.periode_mulai, 
             data.periode_selesai, 
             data.tupoksi, 
-            data.sks_jabatan, // Nilai hasil snapshot dari findAutoSks
-            data.id_jafung, 
+            data.sks_jabatan, 
             data.created_by
         ];
         return await db.execute(sql, params);
@@ -84,18 +80,18 @@ const Model1a1 = {
         const sql = `
             UPDATE 1a1_pimpinan_dan_tupoksi 
             SET id_pegawai = ?, periode_mulai = ?, periode_selesai = ?, 
-                tupoksi = ?, sks_jabatan = ?, id_jafung = ?, updated_by = ?
+                tupoksi = ?, sks_jabatan = ?, updated_by = ?
             WHERE id_pimpinan = ? AND deleted_at IS NULL
         `;
         const params = [
             data.id_pegawai, data.periode_mulai, data.periode_selesai, 
-            data.tupoksi, data.sks_jabatan, data.id_jafung, data.updated_by, id
+            data.tupoksi, data.sks_jabatan, data.updated_by, id
         ];
         return await db.execute(sql, params);
     },
 
     /**
-     * DELETE: Soft Delete (Integritas Data)
+     * DELETE: Soft Delete
      */
     softDelete: async (id, deleted_by) => {
         const sql = `
@@ -106,25 +102,33 @@ const Model1a1 = {
         return await db.execute(sql, [deleted_by, id]);
     },
     
+    /**
+     * HARD DELETE: Hapus Permanen
+     */
     hardDelete: async (id) => {
         const sql = "DELETE FROM `1a1_pimpinan_dan_tupoksi` WHERE id_pimpinan = ?";
         return await db.execute(sql, [id]);
     },
 
+    /**
+     * RECYCLE BIN: Ambil Data Terhapus
+     */
     findDeleted: async () => {
         const sql = `
             SELECT 
                 t.id_pimpinan,
                 IF(uk.nama_unit = 'PRODI', CONCAT('PRODI ', pr.nama_prodi), uk.nama_unit) AS nama_unit_display,
                 p.nama_lengkap, t.periode_mulai, t.periode_selesai,
-                p.pendidikan_terakhir, jf.nama_jafung, t.tupoksi, t.sks_jabatan,
+                p.pendidikan_terakhir, 
+                COALESCE(jf.nama_jafung, 'Tenaga Kependidikan / Non-Jafung') AS nama_jafung, 
+                t.tupoksi, t.sks_jabatan,
                 t.deleted_at
             FROM 1a1_pimpinan_dan_tupoksi t
             JOIN pegawai p ON t.id_pegawai = p.id_pegawai
             JOIN unit_kerja uk ON p.id_unit = uk.id_unit
             LEFT JOIN dosen d ON p.id_pegawai = d.id_pegawai
             LEFT JOIN prodi pr ON d.id_prodi = pr.id_prodi
-            LEFT JOIN jabatan_fungsional jf ON t.id_jafung = jf.id_jafung
+            LEFT JOIN jabatan_fungsional jf ON d.id_jabatan_fungsional = jf.id_jafung
             WHERE t.deleted_at IS NOT NULL
             ORDER BY t.deleted_at DESC
         `;
@@ -132,6 +136,9 @@ const Model1a1 = {
         return rows;
     },
 
+    /**
+     * RESTORE: Pulihkan Data
+     */
     restore: async (id) => {
         const sql = "UPDATE `1a1_pimpinan_dan_tupoksi` SET deleted_at = NULL, deleted_by = NULL WHERE id_pimpinan = ?";
         return await db.execute(sql, [id]);
