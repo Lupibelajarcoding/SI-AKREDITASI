@@ -8,7 +8,8 @@ const Model1a4 = {
     /**
      * READ: Mengambil data lengkap dengan perhitungan total SKS
      */
-    findAll: async (id_tahun) => {
+    findAll: async (id_tahun, id_prodi) => {
+        const prodiFilter = id_prodi ? 'AND d.id_prodi = ?' : '';
         const sql = `
             SELECT 
                 b.id_beban_kerja,
@@ -29,54 +30,62 @@ const Model1a4 = {
                     b.sks_penelitian + b.sks_pkm + 
                     COALESCE(t1a1.sks_jabatan, 0) + b.sks_manajemen_pt_lain
                 ) AS total_sks
-            FROM 1a4_beban_dtpr b
+            FROM \`1a4_beban_dtpr\` b
             JOIN dosen d ON b.id_dosen = d.id_dosen
             JOIN pegawai p ON d.id_pegawai = p.id_pegawai
-            LEFT JOIN 1a1_pimpinan_dan_tupoksi t1a1 ON b.id_pimpinan = t1a1.id_pimpinan
+            LEFT JOIN \`1a1_pimpinan_dan_tupoksi\` t1a1 ON b.id_pimpinan = t1a1.id_pimpinan
             WHERE b.id_tahun = ? AND b.deleted_at IS NULL
+            ${prodiFilter}
             ORDER BY p.nama_lengkap ASC
         `;
-        const [rows] = await db.execute(sql, [id_tahun]);
+        const params = [id_tahun];
+        if (id_prodi) params.push(id_prodi);
+        const [rows] = await db.execute(sql, params);
         return rows;
     },
 
     /**
      * SUMMARY: Menghitung JUMLAH dan RATA-RATA untuk bagian bawah tabel
      */
-    getSummary: async (id_tahun) => {
+    getSummary: async (id_tahun, id_prodi) => {
+        const prodiFilter = id_prodi ? 'AND d.id_prodi = ?' : '';
         const sql = `
             SELECT 
                 -- JUMLAH (SUM)
-                SUM(sks_ps_sendiri) as sum_ps_sendiri,
-                SUM(sks_ps_lain) as sum_ps_lain,
-                SUM(sks_pt_lain) as sum_pt_lain,
-                SUM(sks_penelitian) as sum_penelitian,
-                SUM(sks_pkm) as sum_pkm,
+                SUM(b.sks_ps_sendiri) as sum_ps_sendiri,
+                SUM(b.sks_ps_lain) as sum_ps_lain,
+                SUM(b.sks_pt_lain) as sum_pt_lain,
+                SUM(b.sks_penelitian) as sum_penelitian,
+                SUM(b.sks_pkm) as sum_pkm,
                 SUM(COALESCE(t1a1.sks_jabatan, 0)) as sum_manajemen_sendiri,
-                SUM(sks_manajemen_pt_lain) as sum_manajemen_lain,
+                SUM(b.sks_manajemen_pt_lain) as sum_manajemen_lain,
                 SUM(
-                    sks_ps_sendiri + sks_ps_lain + sks_pt_lain + 
-                    sks_penelitian + sks_pkm + 
-                    COALESCE(t1a1.sks_jabatan, 0) + sks_manajemen_pt_lain
+                    b.sks_ps_sendiri + b.sks_ps_lain + b.sks_pt_lain + 
+                    b.sks_penelitian + b.sks_pkm + 
+                    COALESCE(t1a1.sks_jabatan, 0) + b.sks_manajemen_pt_lain
                 ) as sum_total,
                 -- RATA-RATA (AVG)
-                AVG(sks_ps_sendiri) as avg_ps_sendiri,
-                AVG(sks_ps_lain) as avg_ps_lain,
-                AVG(sks_pt_lain) as avg_pt_lain,
-                AVG(sks_penelitian) as avg_penelitian,
-                AVG(sks_pkm) as avg_pkm,
+                AVG(b.sks_ps_sendiri) as avg_ps_sendiri,
+                AVG(b.sks_ps_lain) as avg_ps_lain,
+                AVG(b.sks_pt_lain) as avg_pt_lain,
+                AVG(b.sks_penelitian) as avg_penelitian,
+                AVG(b.sks_pkm) as avg_pkm,
                 AVG(COALESCE(t1a1.sks_jabatan, 0)) as avg_manajemen_sendiri,
-                AVG(sks_manajemen_pt_lain) as avg_manajemen_lain,
+                AVG(b.sks_manajemen_pt_lain) as avg_manajemen_lain,
                 AVG(
-                    sks_ps_sendiri + sks_ps_lain + sks_pt_lain + 
-                    sks_penelitian + sks_pkm + 
-                    COALESCE(t1a1.sks_jabatan, 0) + sks_manajemen_pt_lain
+                    b.sks_ps_sendiri + b.sks_ps_lain + b.sks_pt_lain + 
+                    b.sks_penelitian + b.sks_pkm + 
+                    COALESCE(t1a1.sks_jabatan, 0) + b.sks_manajemen_pt_lain
                 ) as avg_total
-            FROM 1a4_beban_dtpr b
-            LEFT JOIN 1a1_pimpinan_dan_tupoksi t1a1 ON b.id_pimpinan = t1a1.id_pimpinan
+            FROM \`1a4_beban_dtpr\` b
+            JOIN dosen d ON b.id_dosen = d.id_dosen
+            LEFT JOIN \`1a1_pimpinan_dan_tupoksi\` t1a1 ON b.id_pimpinan = t1a1.id_pimpinan
             WHERE b.id_tahun = ? AND b.deleted_at IS NULL
+            ${prodiFilter}
         `;
-        const [rows] = await db.execute(sql, [id_tahun]);
+        const params = [id_tahun];
+        if (id_prodi) params.push(id_prodi);
+        const [rows] = await db.execute(sql, params);
         return rows[0];
     },
 
@@ -138,9 +147,57 @@ const Model1a4 = {
         }
     },
 
+    update: async (id, data) => {
+        const sql = `
+            UPDATE \`1a4_beban_dtpr\`
+            SET id_dosen = ?, sks_ps_sendiri = ?, sks_ps_lain = ?, sks_pt_lain = ?,
+                sks_penelitian = ?, sks_pkm = ?, sks_manajemen_pt_lain = ?, id_tahun = ?,
+                updated_by = ?
+            WHERE id_beban_kerja = ? AND deleted_at IS NULL
+        `;
+        const params = [
+            data.id_dosen,
+            data.sks_ps_sendiri || 0,
+            data.sks_ps_lain || 0,
+            data.sks_pt_lain || 0,
+            data.sks_penelitian || 0,
+            data.sks_pkm || 0,
+            data.sks_manajemen_pt_lain || 0,
+            data.id_tahun,
+            data.updated_by,
+            id
+        ];
+        return await db.execute(sql, params);
+    },
+
     softDelete: async (id, deleted_by) => {
-        const sql = `UPDATE 1a4_beban_dtpr SET deleted_at = CURRENT_TIMESTAMP, deleted_by = ? WHERE id_beban_kerja = ?`;
+        const sql = `UPDATE \`1a4_beban_dtpr\` SET deleted_at = CURRENT_TIMESTAMP, deleted_by = ? WHERE id_beban_kerja = ?`;
         return await db.execute(sql, [deleted_by, id]);
+    },
+
+    findAllDeleted: async (id_tahun) => {
+        const sql = `
+            SELECT 
+                b.id_beban_kerja,
+                p.nama_lengkap AS nama_dtpr,
+                b.sks_ps_sendiri, b.sks_ps_lain, b.sks_pt_lain,
+                b.sks_penelitian, b.sks_pkm, b.sks_manajemen_pt_lain,
+                b.deleted_at
+            FROM \`1a4_beban_dtpr\` b
+            JOIN dosen d ON b.id_dosen = d.id_dosen
+            JOIN pegawai p ON d.id_pegawai = p.id_pegawai
+            WHERE b.deleted_at IS NOT NULL
+            ${id_tahun ? 'AND b.id_tahun = ?' : ''}
+            ORDER BY b.deleted_at DESC
+        `;
+        const params = id_tahun ? [id_tahun] : [];
+        const [rows] = await db.execute(sql, params);
+        return rows;
+    },
+
+    restore: async (id) => {
+        const sql = `UPDATE \`1a4_beban_dtpr\` SET deleted_at = NULL, deleted_by = NULL WHERE id_beban_kerja = ?`;
+        return await db.execute(sql, [id]);
     },
 
     hardDelete: async (id) => {

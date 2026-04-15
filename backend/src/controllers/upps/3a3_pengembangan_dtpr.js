@@ -6,8 +6,9 @@ const controller3a3 = {
     index: async (req, res) => {
         try {
             const id_tahun = parseInt(req.query.id_tahun);
-            const data = await Model3a3.findAllRange(id_tahun);
-            const stats = await Model3a3.getStats(id_tahun);
+            const id_prodi = req.query.id_prodi ? parseInt(req.query.id_prodi) : null;
+            const data = await Model3a3.findAllRange(id_tahun, id_prodi);
+            const stats = await Model3a3.getStats(id_tahun, id_prodi);
             res.status(200).json({ success: true, data, stats });
         } catch (error) { res.status(500).json({ success: false, message: error.message }); }
     },
@@ -16,7 +17,8 @@ const controller3a3 = {
     trash: async (req, res) => {
         try {
             const { id_tahun } = req.query;
-            const data = await Model3a3.findAllDeleted(id_tahun);
+            const id_prodi = req.query.id_prodi ? parseInt(req.query.id_prodi) : null;
+            const data = await Model3a3.findAllDeleted(id_tahun, id_prodi);
             res.status(200).json({ success: true, data });
         } catch (error) { res.status(500).json({ success: false, message: error.message }); }
     },
@@ -59,8 +61,9 @@ const controller3a3 = {
     exportExcel: async (req, res) => {
         try {
             const targetTS = parseInt(req.query.id_tahun);
-            const data = await Model3a3.findAllRange(targetTS);
-            const stats = await Model3a3.getStats(targetTS);
+            const id_prodi = req.query.id_prodi ? parseInt(req.query.id_prodi) : null;
+            const data = await Model3a3.findAllRange(targetTS, id_prodi);
+            const stats = await Model3a3.getStats(targetTS, id_prodi);
             const workbook = new ExcelJS.Workbook();
             const worksheet = workbook.addWorksheet('3.A.3');
 
@@ -125,7 +128,7 @@ const controller3a3 = {
 
                 worksheet.getRow(currRow).values = [
                     item.jenis_pengembangan, 
-                    item.nama_dtpr, 
+                    item.nama_pengembangan, 
                     '', // C kosong karena B-C di-merge
                     ts2, ts1, ts, 
                     item.link_bukti

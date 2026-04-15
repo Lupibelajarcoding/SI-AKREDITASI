@@ -9,11 +9,12 @@ const controller1a4 = {
     // 1. INDEX: Ambil Data & Summary (Jumlah/Rata-rata)
     index: async (req, res) => {
         try {
-            const { id_tahun } = req.query; // Filter berdasarkan Tahun Semester (TS)
+            const { id_tahun } = req.query;
+            const id_prodi = req.query.id_prodi ? parseInt(req.query.id_prodi) : null;
             if (!id_tahun) return res.status(400).json({ success: false, message: "id_tahun diperlukan" });
 
-            const data = await Model1a4.findAll(id_tahun);
-            const summary = await Model1a4.getSummary(id_tahun);
+            const data = await Model1a4.findAll(id_tahun, id_prodi);
+            const summary = await Model1a4.getSummary(id_tahun, id_prodi);
 
             res.status(200).json({
                 success: true,
@@ -40,12 +41,46 @@ const controller1a4 = {
         }
     },
 
-    // 3. DESTROY: Soft Delete
+    // 3. UPDATE: Edit Data Beban Kerja
+    update: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const dataToUpdate = { ...req.body, updated_by: req.user.id_user };
+            await Model1a4.update(id, dataToUpdate);
+            res.status(200).json({ success: true, message: "Data beban kerja berhasil diperbarui" });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    },
+
+    // 4. DESTROY: Soft Delete
     destroy: async (req, res) => {
         try {
             const { id } = req.params;
             await Model1a4.softDelete(id, req.user.id_user);
-            res.status(200).json({ success: true, message: "Data berhasil dihapus" });
+            res.status(200).json({ success: true, message: "Data dipindahkan ke sampah" });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    },
+
+    // 5. TRASH: Tampilkan Data Terhapus
+    trash: async (req, res) => {
+        try {
+            const { id_tahun } = req.query;
+            const id_prodi = req.query.id_prodi ? parseInt(req.query.id_prodi) : null;
+            const data = await Model1a4.findAllDeleted(id_tahun, id_prodi);
+            res.status(200).json({ success: true, data });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    },
+
+    // 6. RESTORE: Pulihkan Data dari Sampah
+    restore: async (req, res) => {
+        try {
+            await Model1a4.restore(req.params.id);
+            res.status(200).json({ success: true, message: "Data berhasil dipulihkan" });
         } catch (error) {
             res.status(500).json({ success: false, message: error.message });
         }

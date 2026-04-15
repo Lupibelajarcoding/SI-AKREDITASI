@@ -6,7 +6,8 @@ const db = require('../../config/db');
  */
 const Model3a3 = {
     // 1. Ambil data yang aktif
-    findAllRange: async (id_tahun) => {
+    findAllRange: async (id_tahun, id_prodi) => {
+        const prodiFilter = id_prodi ? 'AND d.id_prodi = ?' : '';
         const sql = `
             SELECT 
                 p.id_pengembangan,
@@ -20,35 +21,47 @@ const Model3a3 = {
             JOIN pegawai peg ON d.id_pegawai = peg.id_pegawai
             WHERE p.id_tahun BETWEEN (? - 2) AND ? 
             AND p.deleted_at IS NULL
+            ${prodiFilter}
             ORDER BY p.id_tahun DESC, peg.nama_lengkap ASC
         `;
-        const [rows] = await db.execute(sql, [id_tahun, id_tahun]);
+        const params = [id_tahun, id_tahun];
+        if (id_prodi) params.push(id_prodi);
+        const [rows] = await db.execute(sql, params);
         return rows;
     },
 
     // 2. Ambil data di "Tempat Sampah"
-    findAllDeleted: async (id_tahun) => {
+    findAllDeleted: async (id_tahun, id_prodi) => {
+        const prodiFilter = id_prodi ? 'AND d.id_prodi = ?' : '';
         const sql = `
             SELECT p.*, peg.nama_lengkap AS nama_dtpr
             FROM \`3a3_pengembangan_dtpr\` p
             JOIN dosen d ON p.id_dosen = d.id_dosen
             JOIN pegawai peg ON d.id_pegawai = peg.id_pegawai
             WHERE p.id_tahun = ? AND p.deleted_at IS NOT NULL
+            ${prodiFilter}
             ORDER BY p.deleted_at DESC
         `;
-        const [rows] = await db.execute(sql, [id_tahun]);
+        const params = [id_tahun];
+        if (id_prodi) params.push(id_prodi);
+        const [rows] = await db.execute(sql, params);
         return rows;
     },
 
     // 3. Stats untuk Header (TS-2, TS-1, TS)
-    getStats: async (current_id_tahun) => {
+    getStats: async (current_id_tahun, id_prodi) => {
+        const prodiFilter = id_prodi ? 'AND d.id_prodi = ?' : '';
         const sql = `
-            SELECT id_tahun, COUNT(DISTINCT id_dosen) as jumlah_dosen
-            FROM \`3a3_pengembangan_dtpr\`
-            WHERE id_tahun BETWEEN (? - 2) AND ? AND deleted_at IS NULL
-            GROUP BY id_tahun
+            SELECT p.id_tahun, COUNT(DISTINCT p.id_dosen) as jumlah_dosen
+            FROM \`3a3_pengembangan_dtpr\` p
+            JOIN dosen d ON p.id_dosen = d.id_dosen
+            WHERE p.id_tahun BETWEEN (? - 2) AND ? AND p.deleted_at IS NULL
+            ${prodiFilter}
+            GROUP BY p.id_tahun
         `;
-        const [rows] = await db.execute(sql, [current_id_tahun, current_id_tahun]);
+        const params = [current_id_tahun, current_id_tahun];
+        if (id_prodi) params.push(id_prodi);
+        const [rows] = await db.execute(sql, params);
         return rows;
     },
 

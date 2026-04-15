@@ -94,7 +94,7 @@ const controller1a1 = {
         }
     },
 
-    deletedList: async (req, res) => {
+    trash: async (req, res) => {
         try {
             const data = await Model1a1.findDeleted();
             res.status(200).json({
