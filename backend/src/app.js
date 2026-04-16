@@ -26,6 +26,9 @@ const app = express();
 const route1a2 = require('./routes/keuangan/1a2_sumber_pendanaan');
 const route1a3 = require('./routes/keuangan/1a3_penggunaan_dana');
 
+//import Routes Kepegawaian
+const route1a5 = require('./routes/kepegawaian/1a5_tendik');
+
 // 2. Middleware Global
 app.use(cors()); 
 app.use(express.json()); 
@@ -52,6 +55,9 @@ app.use('/api/tpm/1b-spmi', route1b);
 // Routes Keuangan
 app.use('/api/keuangan/1a2-sumber-pendanaan', route1a2);
 app.use('/api/keuangan/1a3-penggunaan-dana', route1a3);
+
+// Routes Kepegawaian
+app.use('/api/kepegawaian/1a5-tendik', route1a5);
 
 // 4. Root Endpoint (Checking Status)
 app.get('/', (req, res) => {
