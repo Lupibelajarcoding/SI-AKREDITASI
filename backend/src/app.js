@@ -31,6 +31,7 @@ const route1a5 = require('./routes/kepegawaian/1a5_tendik');
 
 //import Routes Sarpras
 const route3a1 = require('./routes/sarpras/3a1_sarana_prasarana');
+const route4a1 = require('./routes/sarpras/4a1_sarana_prasarana');
 
 // 2. Middleware Global
 app.use(cors()); 
@@ -64,6 +65,7 @@ app.use('/api/kepegawaian/1a5-tendik', route1a5);
 
 // Routes Sarpras
 app.use('/api/sarpras/3a1-sarana-prasarana', route3a1);
+app.use('/api/sarpras/4a1-sarana-prasarana-pkm', route4a1);
 
 // 4. Root Endpoint (Checking Status)
 app.get('/', (req, res) => {
