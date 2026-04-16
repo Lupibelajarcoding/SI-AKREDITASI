@@ -29,6 +29,9 @@ const route1a3 = require('./routes/keuangan/1a3_penggunaan_dana');
 //import Routes Kepegawaian
 const route1a5 = require('./routes/kepegawaian/1a5_tendik');
 
+//import Routes Sarpras
+const route3a1 = require('./routes/sarpras/3a1_sarana_prasarana');
+
 // 2. Middleware Global
 app.use(cors()); 
 app.use(express.json()); 
@@ -58,6 +61,9 @@ app.use('/api/keuangan/1a3-penggunaan-dana', route1a3);
 
 // Routes Kepegawaian
 app.use('/api/kepegawaian/1a5-tendik', route1a5);
+
+// Routes Sarpras
+app.use('/api/sarpras/3a1-sarana-prasarana', route3a1);
 
 // 4. Root Endpoint (Checking Status)
 app.get('/', (req, res) => {
