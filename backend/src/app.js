@@ -11,6 +11,7 @@ const dosenRoutes = require('./routes/master/dosenRoutes');
 const tendikRoutes = require('./routes/master/tendikRoutes');
 const userRoutes = require('./routes/master/userRoutes');
 const prodiRoutes = require('./routes/master/prodiRoutes');
+const tahunAkademikRoutes = require('./routes/master/tahunAkademikRoutes');
 
 // Import Routes Upps
 const route1a1 = require('./routes/upps/1a1_pimpinan_dan_tupoksi');
@@ -47,6 +48,7 @@ app.use('/api/master/dosen', dosenRoutes);
 app.use('/api/master/tendik', tendikRoutes);
 app.use('/api/master/users', userRoutes);
 app.use('/api/master/prodi', prodiRoutes);
+app.use('/api/master/tahun-akademik', tahunAkademikRoutes);
 
 // Routes Upps
 app.use('/api/upps/1a1-pimpinan', route1a1); 
