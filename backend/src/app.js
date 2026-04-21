@@ -35,6 +35,10 @@ const route3a1 = require('./routes/sarpras/3a1_sarana_prasarana');
 const route4a1 = require('./routes/sarpras/4a1_sarana_prasarana');
 const route5_2 = require('./routes/sarpras/5_2_sarana_prasarana');
 
+//import Routes Kemahasiswaan
+const route2b4 = require('./routes/kemahasiswaan/2b4_masa_tunggu');
+const route2b5 = require('./routes/kemahasiswaan/2b5_kesesuaian_kerja');
+
 // 2. Middleware Global
 app.use(cors()); 
 app.use(express.json()); 
@@ -70,6 +74,10 @@ app.use('/api/kepegawaian/1a5-tendik', route1a5);
 app.use('/api/sarpras/3a1-sarana-prasarana', route3a1);
 app.use('/api/sarpras/4a1-sarana-prasarana-pkm', route4a1);
 app.use('/api/sarpras/5-2-sarana-prasarana', route5_2);
+
+// Routes Kemahasiswaan
+app.use('/api/kemahasiswaan/2b4-masa-tunggu', route2b4);
+app.use('/api/kemahasiswaan/2b5-kesesuaian-kerja', route2b5);
 
 // 4. Root Endpoint (Checking Status)
 app.get('/', (req, res) => {
