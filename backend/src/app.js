@@ -38,6 +38,7 @@ const route5_2 = require('./routes/sarpras/5_2_sarana_prasarana');
 //import Routes Kemahasiswaan
 const route2b4 = require('./routes/kemahasiswaan/2b4_masa_tunggu');
 const route2b5 = require('./routes/kemahasiswaan/2b5_kesesuaian_kerja');
+const route2b6 = require('./routes/kemahasiswaan/2b6_kepuasan');
 
 // 2. Middleware Global
 app.use(cors()); 
@@ -78,6 +79,7 @@ app.use('/api/sarpras/5-2-sarana-prasarana', route5_2);
 // Routes Kemahasiswaan
 app.use('/api/kemahasiswaan/2b4-masa-tunggu', route2b4);
 app.use('/api/kemahasiswaan/2b5-kesesuaian-kerja', route2b5);
+app.use('/api/kemahasiswaan/2b6-kepuasan', route2b6);
 
 // 4. Root Endpoint (Checking Status)
 app.get('/', (req, res) => {
