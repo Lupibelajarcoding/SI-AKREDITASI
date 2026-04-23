@@ -12,6 +12,10 @@ const tendikRoutes = require('./routes/master/tendikRoutes');
 const userRoutes = require('./routes/master/userRoutes');
 const prodiRoutes = require('./routes/master/prodiRoutes');
 const tahunAkademikRoutes = require('./routes/master/tahunAkademikRoutes');
+const mataKuliahRoutes = require('./routes/master/mata_kuliah');
+const profilLulusanRoutes = require('./routes/master/profil_lulusan');
+const cplRoutes = require('./routes/master/cpl');
+const cpmkRoutes = require('./routes/master/cpmk');
 
 // Import Routes Upps
 const route1a1 = require('./routes/upps/1a1_pimpinan_dan_tupoksi');
@@ -39,6 +43,11 @@ const route5_2 = require('./routes/sarpras/5_2_sarana_prasarana');
 const route2b4 = require('./routes/kemahasiswaan/2b4_masa_tunggu');
 const route2b5 = require('./routes/kemahasiswaan/2b5_kesesuaian_kerja');
 
+// Import Routes Prodi
+const route2b1 = require('./routes/prodi/2b1_isi_pembelajaran');
+const route2b2 = require('./routes/prodi/2b2_pemetaan_cpl_pl');
+const route2b3 = require('./routes/prodi/2b3_peta_pemenuhan_cpl');
+
 // 2. Middleware Global
 app.use(cors()); 
 app.use(express.json()); 
@@ -53,6 +62,10 @@ app.use('/api/master/tendik', tendikRoutes);
 app.use('/api/master/users', userRoutes);
 app.use('/api/master/prodi', prodiRoutes);
 app.use('/api/master/tahun-akademik', tahunAkademikRoutes);
+app.use('/api/master/mata-kuliah', mataKuliahRoutes);
+app.use('/api/master/profil-lulusan', profilLulusanRoutes);
+app.use('/api/master/cpl', cplRoutes);
+app.use('/api/master/cpmk', cpmkRoutes);
 
 // Routes Upps
 app.use('/api/upps/1a1-pimpinan', route1a1); 
@@ -78,6 +91,11 @@ app.use('/api/sarpras/5-2-sarana-prasarana', route5_2);
 // Routes Kemahasiswaan
 app.use('/api/kemahasiswaan/2b4-masa-tunggu', route2b4);
 app.use('/api/kemahasiswaan/2b5-kesesuaian-kerja', route2b5);
+
+// Routes Prodi
+app.use('/api/prodi/2b1-isi-pembelajaran', route2b1);
+app.use('/api/prodi/2b2-pemetaan-cpl', route2b2);
+app.use('/api/prodi/2b3-peta-pemenuhan', route2b3);
 
 // 4. Root Endpoint (Checking Status)
 app.get('/', (req, res) => {
