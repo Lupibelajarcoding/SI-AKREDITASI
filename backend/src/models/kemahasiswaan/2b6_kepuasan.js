@@ -26,12 +26,24 @@ const Model2b6 = {
         return rows[0].total || 0;
     },
 
-    // 4. Auto Mahasiswa (Placeholder 2.A.1)
+    // 4. ENGINE OTOMATIS: Ambil Mahasiswa Aktif (Sinkron ke 2.A.1 Arienta)
     getAutoMhsAktif: async (id_prodi, id_tahun) => {
         try {
-            const [rows] = await db.execute("SELECT (jumlah_reguler_aktif + jumlah_transfer_aktif) as total FROM `2a1_mahasiswa` WHERE id_prodi = ? AND id_tahun = ? LIMIT 1", [id_prodi, id_tahun]);
+            // Rumus: Total Mahasiswa Aktif (Reguler + RPL) sesuai query Arienta
+            const sql = `
+                SELECT 
+                    (aktif_reg_diterima + aktif_reg_afirmasi + aktif_reg_khusus + 
+                     aktif_rpl_diterima + aktif_rpl_afirmasi + aktif_rpl_khusus) as total
+                FROM \`2a1_data_mahasiswa\` 
+                WHERE prodi_id_prodi = ? AND tahun_akademik_id_tahun = ? 
+                AND deleted_at IS NULL LIMIT 1
+            `;
+            const [rows] = await db.execute(sql, [id_prodi, id_tahun]);
             return rows[0] ? rows[0].total : 0;
-        } catch (e) { return 0; }
+        } catch (e) {
+            console.error("Link 2A1 Error:", e.message);
+            return 0; // Return 0 jika tabel belum dibuat/diisi
+        }
     },
 
     // 5. Simpan/Update (UPSERT)
