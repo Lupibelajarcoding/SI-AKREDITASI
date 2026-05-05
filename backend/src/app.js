@@ -50,6 +50,12 @@ const route2b1 = require('./routes/prodi/2b1_isi_pembelajaran');
 const route2b2 = require('./routes/prodi/2b2_pemetaan_cpl_pl');
 const route2b3 = require('./routes/prodi/2b3_peta_pemenuhan_cpl');
 
+// Import Routes PMB (Kriteria 2.A.1)
+const route2a1_pmb = require('./routes/pmb/2a1_data_mahasiswa');
+
+// Import Routes ALA (Kriteria 2.A.1)
+const route2a1_ala = require('./routes/ala/2a1_data_mahasiswa');
+
 // 2. Middleware Global
 app.use(cors()); 
 app.use(express.json()); 
@@ -100,6 +106,12 @@ app.use('/api/kemahasiswaan/2d-rekognisi', route2d);
 app.use('/api/prodi/2b1-isi-pembelajaran', route2b1);
 app.use('/api/prodi/2b2-pemetaan-cpl', route2b2);
 app.use('/api/prodi/2b3-peta-pemenuhan', route2b3);
+
+// Routes PMB (Tabel 2.A.1)
+app.use('/api/pmb/2a1-data-mahasiswa', route2a1_pmb);
+
+// Routes ALA (Tabel 2.A.1)
+app.use('/api/ala/2a1-data-mahasiswa', route2a1_ala);
 
 // 4. Root Endpoint (Checking Status)
 app.get('/', (req, res) => {
