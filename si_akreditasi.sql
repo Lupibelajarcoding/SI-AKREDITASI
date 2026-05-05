@@ -296,7 +296,7 @@ CREATE TABLE `2a1_data_mahasiswa` (
   KEY `fk_2a1_tahun` (`tahun_akademik_id_tahun`),
   CONSTRAINT `fk_2a1_prodi` FOREIGN KEY (`prodi_id_prodi`) REFERENCES `prodi` (`id_prodi`),
   CONSTRAINT `fk_2a1_tahun` FOREIGN KEY (`tahun_akademik_id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -305,8 +305,122 @@ CREATE TABLE `2a1_data_mahasiswa` (
 
 LOCK TABLES `2a1_data_mahasiswa` WRITE;
 /*!40000 ALTER TABLE `2a1_data_mahasiswa` DISABLE KEYS */;
-INSERT INTO `2a1_data_mahasiswa` VALUES (4,1,3,100,48,0,0,49,0,0,50,0,0,0,0,0,0,0,0,'2026-04-29 07:57:28',3,'2026-04-29 07:58:04',3,NULL,NULL,NULL,NULL);
+INSERT INTO `2a1_data_mahasiswa` VALUES (1,1,3,96,50,0,0,45,0,0,4,0,0,500,40,3,100,1,0,'2026-05-04 08:13:53',4,'2026-05-05 06:08:20',3,'2026-05-05 13:08:20',3,NULL,NULL),(2,1,2,50,100,10,0,30,5,0,20,3,0,400,40,0,100,20,0,'2026-05-05 03:29:46',3,'2026-05-05 03:32:13',6,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `2a1_data_mahasiswa` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `2b1_isi_pembelajaran`
+--
+
+DROP TABLE IF EXISTS `2b1_isi_pembelajaran`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `2b1_isi_pembelajaran` (
+  `id_2b1` int NOT NULL AUTO_INCREMENT,
+  `id_mk` int NOT NULL,
+  `id_pl` int NOT NULL,
+  `id_tahun` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `deleted_by` int DEFAULT NULL,
+  PRIMARY KEY (`id_2b1`),
+  KEY `fk_2b1_mk` (`id_mk`),
+  KEY `fk_2b1_pl` (`id_pl`),
+  KEY `fk_2b1_tahun` (`id_tahun`),
+  CONSTRAINT `fk_2b1_mk` FOREIGN KEY (`id_mk`) REFERENCES `master_mata_kuliah` (`id_mk`),
+  CONSTRAINT `fk_2b1_pl` FOREIGN KEY (`id_pl`) REFERENCES `master_profil_lulusan` (`id_pl`),
+  CONSTRAINT `fk_2b1_tahun` FOREIGN KEY (`id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `2b1_isi_pembelajaran`
+--
+
+LOCK TABLES `2b1_isi_pembelajaran` WRITE;
+/*!40000 ALTER TABLE `2b1_isi_pembelajaran` DISABLE KEYS */;
+/*!40000 ALTER TABLE `2b1_isi_pembelajaran` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `2b2_pemetaan_cpl_pl`
+--
+
+DROP TABLE IF EXISTS `2b2_pemetaan_cpl_pl`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `2b2_pemetaan_cpl_pl` (
+  `id_2b2` int NOT NULL AUTO_INCREMENT,
+  `id_cpl` int NOT NULL,
+  `id_pl` int NOT NULL,
+  `id_tahun` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `deleted_by` int DEFAULT NULL,
+  PRIMARY KEY (`id_2b2`),
+  KEY `fk_2b2_cpl` (`id_cpl`),
+  KEY `fk_2b2_pl` (`id_pl`),
+  KEY `fk_2b2_tahun` (`id_tahun`),
+  CONSTRAINT `fk_2b2_cpl` FOREIGN KEY (`id_cpl`) REFERENCES `master_cpl` (`id_cpl`),
+  CONSTRAINT `fk_2b2_pl` FOREIGN KEY (`id_pl`) REFERENCES `master_profil_lulusan` (`id_pl`),
+  CONSTRAINT `fk_2b2_tahun` FOREIGN KEY (`id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `2b2_pemetaan_cpl_pl`
+--
+
+LOCK TABLES `2b2_pemetaan_cpl_pl` WRITE;
+/*!40000 ALTER TABLE `2b2_pemetaan_cpl_pl` DISABLE KEYS */;
+/*!40000 ALTER TABLE `2b2_pemetaan_cpl_pl` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `2b3_peta_pemenuhan_cpl`
+--
+
+DROP TABLE IF EXISTS `2b3_peta_pemenuhan_cpl`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `2b3_peta_pemenuhan_cpl` (
+  `id_2b3` int NOT NULL AUTO_INCREMENT,
+  `id_cpl` int NOT NULL,
+  `id_cpmk` int NOT NULL,
+  `id_mk` int NOT NULL,
+  `id_tahun` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `deleted_by` int DEFAULT NULL,
+  PRIMARY KEY (`id_2b3`),
+  KEY `fk_2b3_cpl` (`id_cpl`),
+  KEY `fk_2b3_cpmk` (`id_cpmk`),
+  KEY `fk_2b3_mk` (`id_mk`),
+  KEY `fk_2b3_tahun` (`id_tahun`),
+  CONSTRAINT `fk_2b3_cpl` FOREIGN KEY (`id_cpl`) REFERENCES `master_cpl` (`id_cpl`),
+  CONSTRAINT `fk_2b3_cpmk` FOREIGN KEY (`id_cpmk`) REFERENCES `master_cpmk` (`id_cpmk`),
+  CONSTRAINT `fk_2b3_mk` FOREIGN KEY (`id_mk`) REFERENCES `master_mata_kuliah` (`id_mk`),
+  CONSTRAINT `fk_2b3_tahun` FOREIGN KEY (`id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `2b3_peta_pemenuhan_cpl`
+--
+
+LOCK TABLES `2b3_peta_pemenuhan_cpl` WRITE;
+/*!40000 ALTER TABLE `2b3_peta_pemenuhan_cpl` DISABLE KEYS */;
+/*!40000 ALTER TABLE `2b3_peta_pemenuhan_cpl` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -797,6 +911,116 @@ INSERT INTO `jabatan_struktural` VALUES (1,'Ketua'),(2,'Staff');
 UNLOCK TABLES;
 
 --
+-- Table structure for table `master_cpl`
+--
+
+DROP TABLE IF EXISTS `master_cpl`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `master_cpl` (
+  `id_cpl` int NOT NULL AUTO_INCREMENT,
+  `id_prodi` int NOT NULL,
+  `kode_cpl` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `deskripsi_cpl` text COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id_cpl`),
+  KEY `fk_cpl_prodi` (`id_prodi`),
+  CONSTRAINT `fk_cpl_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `master_cpl`
+--
+
+LOCK TABLES `master_cpl` WRITE;
+/*!40000 ALTER TABLE `master_cpl` DISABLE KEYS */;
+/*!40000 ALTER TABLE `master_cpl` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `master_cpmk`
+--
+
+DROP TABLE IF EXISTS `master_cpmk`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `master_cpmk` (
+  `id_cpmk` int NOT NULL AUTO_INCREMENT,
+  `id_prodi` int NOT NULL,
+  `kode_cpmk` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `deskripsi_cpmk` text COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id_cpmk`),
+  KEY `fk_cpmk_prodi` (`id_prodi`),
+  CONSTRAINT `fk_cpmk_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `master_cpmk`
+--
+
+LOCK TABLES `master_cpmk` WRITE;
+/*!40000 ALTER TABLE `master_cpmk` DISABLE KEYS */;
+/*!40000 ALTER TABLE `master_cpmk` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `master_mata_kuliah`
+--
+
+DROP TABLE IF EXISTS `master_mata_kuliah`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `master_mata_kuliah` (
+  `id_mk` int NOT NULL AUTO_INCREMENT,
+  `id_prodi` int NOT NULL,
+  `kode_mk` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_mk` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `sks` int NOT NULL,
+  `semester` int NOT NULL,
+  PRIMARY KEY (`id_mk`),
+  KEY `fk_mk_prodi` (`id_prodi`),
+  CONSTRAINT `fk_mk_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `master_mata_kuliah`
+--
+
+LOCK TABLES `master_mata_kuliah` WRITE;
+/*!40000 ALTER TABLE `master_mata_kuliah` DISABLE KEYS */;
+/*!40000 ALTER TABLE `master_mata_kuliah` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `master_profil_lulusan`
+--
+
+DROP TABLE IF EXISTS `master_profil_lulusan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `master_profil_lulusan` (
+  `id_pl` int NOT NULL AUTO_INCREMENT,
+  `id_prodi` int NOT NULL,
+  `kode_pl` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `deskripsi_pl` text COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id_pl`),
+  KEY `fk_pl_prodi` (`id_prodi`),
+  CONSTRAINT `fk_pl_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `master_profil_lulusan`
+--
+
+LOCK TABLES `master_profil_lulusan` WRITE;
+/*!40000 ALTER TABLE `master_profil_lulusan` DISABLE KEYS */;
+/*!40000 ALTER TABLE `master_profil_lulusan` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `master_sks_jabatan`
 --
 
@@ -893,7 +1117,7 @@ CREATE TABLE `tahun_akademik` (
   `id_tahun` int NOT NULL AUTO_INCREMENT,
   `tahun` int NOT NULL,
   PRIMARY KEY (`id_tahun`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -902,7 +1126,7 @@ CREATE TABLE `tahun_akademik` (
 
 LOCK TABLES `tahun_akademik` WRITE;
 /*!40000 ALTER TABLE `tahun_akademik` DISABLE KEYS */;
-INSERT INTO `tahun_akademik` VALUES (1,2022),(2,2023),(3,2024);
+INSERT INTO `tahun_akademik` VALUES (1,2020),(2,2021),(3,2022),(4,2023),(5,2024),(6,2025),(7,2026),(8,2027),(9,2028),(10,2029),(11,2030),(12,2031),(13,2032),(14,2033),(15,2034),(16,2035),(17,2036),(18,2037),(19,2038),(20,2039),(21,2040),(22,2041),(23,2042),(24,2043),(25,2044),(26,2045),(27,2046),(28,2047),(29,2048),(30,2049),(31,2050),(32,2051),(33,2052),(34,2053),(35,2054),(36,2055),(37,2056),(38,2057),(39,2058),(40,2059),(41,2060),(42,2061),(43,2062),(44,2063),(45,2064),(46,2065),(47,2066),(48,2067),(49,2068),(50,2069),(51,2070),(52,2071),(53,2072),(54,2073),(55,2074),(56,2075),(57,2076),(58,2077),(59,2078),(60,2079),(61,2080),(62,2081),(63,2082),(64,2083),(65,2084),(66,2085),(67,2086),(68,2087),(69,2088),(70,2089),(71,2090),(72,2091),(73,2092),(74,2093),(75,2094),(76,2095),(77,2096),(78,2097),(79,2098),(80,2099),(81,2100);
 /*!40000 ALTER TABLE `tahun_akademik` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -973,7 +1197,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `username` (`username`),
   KEY `id_unit` (`id_unit`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`id_unit`) REFERENCES `unit_kerja` (`id_unit`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -982,7 +1206,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,5,'sisfo','$2a$12$OV4aMPsI8KpzgyuLtbn.heVQiSsrYqfFliGmfOPd4BvlbUY.B.oa6'),(2,11,'lppm','$2a$12$OV4aMPsI8KpzgyuLtbn.heVQiSsrYqfFliGmfOPd4BvlbUY.B.oa6'),(3,13,'admin','$2a$12$OV4aMPsI8KpzgyuLtbn.heVQiSsrYqfFliGmfOPd4BvlbUY.B.oa6');
+INSERT INTO `users` VALUES (1,5,'sisfo','$2a$12$OV4aMPsI8KpzgyuLtbn.heVQiSsrYqfFliGmfOPd4BvlbUY.B.oa6'),(2,11,'lppm','$2a$12$OV4aMPsI8KpzgyuLtbn.heVQiSsrYqfFliGmfOPd4BvlbUY.B.oa6'),(3,13,'admin','$2a$12$OV4aMPsI8KpzgyuLtbn.heVQiSsrYqfFliGmfOPd4BvlbUY.B.oa6'),(4,3,'pmb','$2a$12$OV4aMPsI8KpzgyuLtbn.heVQiSsrYqfFliGmfOPd4BvlbUY.B.oa6'),(5,6,'ala','$2a$12$OV4aMPsI8KpzgyuLtbn.heVQiSsrYqfFliGmfOPd4BvlbUY.B.oa6');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -995,4 +1219,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-30 12:26:16
+-- Dump completed on 2026-05-05 16:21:36
