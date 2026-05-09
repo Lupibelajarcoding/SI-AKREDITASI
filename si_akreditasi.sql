@@ -77,7 +77,7 @@ CREATE TABLE `1a2_sumber_pendanaan_upps` (
   PRIMARY KEY (`id_sumber`),
   KEY `fk_1a2_tahun` (`id_tahun`),
   CONSTRAINT `fk_1a2_tahun` FOREIGN KEY (`id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,7 +113,7 @@ CREATE TABLE `1a3_penggunaan_dana_upps` (
   PRIMARY KEY (`id_penggunaan`),
   KEY `fk_1a3_tahun` (`id_tahun`),
   CONSTRAINT `fk_1a3_tahun` FOREIGN KEY (`id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,7 +198,7 @@ CREATE TABLE `1a5_kualifikasi_tendik` (
   CONSTRAINT `fk_1a5_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`),
   CONSTRAINT `fk_1a5_tahun` FOREIGN KEY (`id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`),
   CONSTRAINT `fk_1a5_tendik` FOREIGN KEY (`id_tendik`) REFERENCES `tenaga_kependidikan` (`id_tendik`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -241,7 +241,7 @@ CREATE TABLE `1b_unit_spmi_dan_sdm` (
   KEY `fk_spmi_tahun` (`tahun_akademik_id_tahun`),
   CONSTRAINT `fk_spmi_tahun` FOREIGN KEY (`tahun_akademik_id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`),
   CONSTRAINT `fk_spmi_unit` FOREIGN KEY (`unit_kerja_id_unit`) REFERENCES `unit_kerja` (`id_unit`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -334,7 +334,7 @@ CREATE TABLE `2b1_isi_pembelajaran` (
   CONSTRAINT `fk_2b1_mk` FOREIGN KEY (`id_mk`) REFERENCES `master_mata_kuliah` (`id_mk`),
   CONSTRAINT `fk_2b1_pl` FOREIGN KEY (`id_pl`) REFERENCES `master_profil_lulusan` (`id_pl`),
   CONSTRAINT `fk_2b1_tahun` FOREIGN KEY (`id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -371,7 +371,7 @@ CREATE TABLE `2b2_pemetaan_cpl_pl` (
   CONSTRAINT `fk_2b2_cpl` FOREIGN KEY (`id_cpl`) REFERENCES `master_cpl` (`id_cpl`),
   CONSTRAINT `fk_2b2_pl` FOREIGN KEY (`id_pl`) REFERENCES `master_profil_lulusan` (`id_pl`),
   CONSTRAINT `fk_2b2_tahun` FOREIGN KEY (`id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -411,7 +411,7 @@ CREATE TABLE `2b3_peta_pemenuhan_cpl` (
   CONSTRAINT `fk_2b3_cpmk` FOREIGN KEY (`id_cpmk`) REFERENCES `master_cpmk` (`id_cpmk`),
   CONSTRAINT `fk_2b3_mk` FOREIGN KEY (`id_mk`) REFERENCES `master_mata_kuliah` (`id_mk`),
   CONSTRAINT `fk_2b3_tahun` FOREIGN KEY (`id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -448,7 +448,7 @@ CREATE TABLE `2b4_masa_tunggu` (
   KEY `fk_2b4_tahun` (`id_tahun`),
   CONSTRAINT `fk_2b4_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`),
   CONSTRAINT `fk_2b4_tahun` FOREIGN KEY (`id_tahun`) REFERENCES `tahun_akademik` (`id_tahun`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -485,7 +485,7 @@ CREATE TABLE `2b5_kesesuaian_kerja` (
   PRIMARY KEY (`id_2b5`),
   KEY `fk_2b5_to_2b4` (`id_2b4`),
   CONSTRAINT `fk_2b5_to_2b4` FOREIGN KEY (`id_2b4`) REFERENCES `2b4_masa_tunggu` (`id_2b4`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -657,7 +657,7 @@ CREATE TABLE `3a1_sarana_prasarana_penelitian` (
   PRIMARY KEY (`id_3a1`),
   KEY `fk_3a1_prodi` (`id_prodi`),
   CONSTRAINT `fk_3a1_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -735,7 +735,7 @@ CREATE TABLE `4a1_sarana_prasarana_pkm` (
   PRIMARY KEY (`id_4a1`),
   KEY `fk_4a1_prodi` (`id_prodi`),
   CONSTRAINT `fk_4a1_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -775,7 +775,7 @@ CREATE TABLE `5_2_sarana_prasarana_pendidikan` (
   PRIMARY KEY (`id_5_2`),
   KEY `fk_5_2_prodi` (`id_prodi`),
   CONSTRAINT `fk_5_2_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -925,7 +925,7 @@ CREATE TABLE `master_cpl` (
   PRIMARY KEY (`id_cpl`),
   KEY `fk_cpl_prodi` (`id_prodi`),
   CONSTRAINT `fk_cpl_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -952,7 +952,7 @@ CREATE TABLE `master_cpmk` (
   PRIMARY KEY (`id_cpmk`),
   KEY `fk_cpmk_prodi` (`id_prodi`),
   CONSTRAINT `fk_cpmk_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -981,7 +981,7 @@ CREATE TABLE `master_mata_kuliah` (
   PRIMARY KEY (`id_mk`),
   KEY `fk_mk_prodi` (`id_prodi`),
   CONSTRAINT `fk_mk_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1008,7 +1008,7 @@ CREATE TABLE `master_profil_lulusan` (
   PRIMARY KEY (`id_pl`),
   KEY `fk_pl_prodi` (`id_prodi`),
   CONSTRAINT `fk_pl_prodi` FOREIGN KEY (`id_prodi`) REFERENCES `prodi` (`id_prodi`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1220,3 +1220,203 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-05-05 16:21:36
+
+
+-- =========================================================
+-- ADDITION: MODUL LPPM (Penelitian, PkM, Roadmap)
+-- Generated by System (No Data, Schema Only)
+-- =========================================================
+
+-- Table structure for table `roadmap_lppm`
+DROP TABLE IF EXISTS `roadmap_lppm`;
+CREATE TABLE `roadmap_lppm` (
+  `id_roadmap` int(11) NOT NULL AUTO_INCREMENT,
+  `id_prodi` int(11) NOT NULL,
+  `id_tahun` int(11) NOT NULL,
+  `jenis_roadmap` varchar(100) NOT NULL,
+  `link_dokumen` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `deleted_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_roadmap`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `3a2_penelitian_dtpr`
+DROP TABLE IF EXISTS `3a2_penelitian_dtpr`;
+CREATE TABLE `3a2_penelitian_dtpr` (
+  `id_3a2` int(11) NOT NULL AUTO_INCREMENT,
+  `id_dosen` int(11) NOT NULL,
+  `id_tahun` int(11) NOT NULL,
+  `id_roadmap` int(11) NOT NULL,
+  `judul_penelitian` varchar(255) NOT NULL,
+  `jumlah_mahasiswa` int(11) DEFAULT 0,
+  `jenis_hibah` varchar(100) DEFAULT NULL,
+  `sumber` varchar(100) DEFAULT NULL,
+  `durasi` int(11) DEFAULT NULL,
+  `jumlah_dana` int(11) DEFAULT 0,
+  `link_bukti` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `deleted_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_3a2`),
+  KEY `fk_3a2_roadmap` (`id_roadmap`),
+  CONSTRAINT `fk_3a2_roadmap` FOREIGN KEY (`id_roadmap`) REFERENCES `roadmap_lppm` (`id_roadmap`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `3c1_kerjasama_penelitian`
+DROP TABLE IF EXISTS `3c1_kerjasama_penelitian`;
+CREATE TABLE `3c1_kerjasama_penelitian` (
+  `id_3c1` int(11) NOT NULL AUTO_INCREMENT,
+  `id_3a2` int(11) NOT NULL,
+  `id_tahun` int(11) NOT NULL,
+  `judul_kerjasama` varchar(255) NOT NULL,
+  `mitra_kerja_sama` varchar(255) NOT NULL,
+  `sumber` varchar(100) DEFAULT NULL,
+  `durasi` int(11) DEFAULT NULL,
+  `jumlah_dana` int(11) DEFAULT 0,
+  `link_bukti` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `deleted_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_3c1`),
+  KEY `id_3a2` (`id_3a2`),
+  CONSTRAINT `3c1_kerjasama_penelitian_ibfk_1` FOREIGN KEY (`id_3a2`) REFERENCES `3a2_penelitian_dtpr` (`id_3a2`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `3c2_publikasi_penelitian`
+DROP TABLE IF EXISTS `3c2_publikasi_penelitian`;
+CREATE TABLE `3c2_publikasi_penelitian` (
+  `id_3c2` int(11) NOT NULL AUTO_INCREMENT,
+  `id_3a2` int(11) NOT NULL,
+  `id_tahun` int(11) NOT NULL,
+  `judul_publikasi` varchar(255) NOT NULL,
+  `jenis_publikasi` varchar(100) DEFAULT NULL,
+  `link_bukti` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `deleted_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_3c2`),
+  KEY `id_3a2` (`id_3a2`),
+  CONSTRAINT `3c2_publikasi_penelitian_ibfk_1` FOREIGN KEY (`id_3a2`) REFERENCES `3a2_penelitian_dtpr` (`id_3a2`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `3c3_perolehan_hki`
+DROP TABLE IF EXISTS `3c3_perolehan_hki`;
+CREATE TABLE `3c3_perolehan_hki` (
+  `id_3c3` int(11) NOT NULL AUTO_INCREMENT,
+  `id_3a2` int(11) NOT NULL,
+  `id_tahun` int(11) NOT NULL,
+  `judul_hki` varchar(255) NOT NULL,
+  `jenis_hki` varchar(100) NOT NULL,
+  `link_bukti` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `deleted_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_3c3`),
+  KEY `id_3a2` (`id_3a2`),
+  CONSTRAINT `3c3_perolehan_hki_ibfk_1` FOREIGN KEY (`id_3a2`) REFERENCES `3a2_penelitian_dtpr` (`id_3a2`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `4a2_pkm_dtpr`
+DROP TABLE IF EXISTS `4a2_pkm_dtpr`;
+CREATE TABLE `4a2_pkm_dtpr` (
+  `id_4a2` int(11) NOT NULL AUTO_INCREMENT,
+  `id_dosen` int(11) NOT NULL,
+  `id_tahun` int(11) NOT NULL,
+  `id_roadmap` int(11) NOT NULL,
+  `judul_pkm` varchar(255) NOT NULL,
+  `jumlah_mahasiswa` int(11) DEFAULT 0,
+  `jenis_hibah` varchar(100) DEFAULT NULL,
+  `sumber` varchar(100) DEFAULT NULL,
+  `durasi` int(11) DEFAULT NULL,
+  `jumlah_dana` int(11) DEFAULT 0,
+  `link_bukti` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `deleted_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_4a2`),
+  KEY `fk_4a2_roadmap` (`id_roadmap`),
+  CONSTRAINT `fk_4a2_roadmap` FOREIGN KEY (`id_roadmap`) REFERENCES `roadmap_lppm` (`id_roadmap`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `4c1_kerjasama_pkm`
+DROP TABLE IF EXISTS `4c1_kerjasama_pkm`;
+CREATE TABLE `4c1_kerjasama_pkm` (
+  `id_4c1` int(11) NOT NULL AUTO_INCREMENT,
+  `id_4a2` int(11) NOT NULL,
+  `id_tahun` int(11) NOT NULL,
+  `judul_kerjasama` varchar(255) NOT NULL,
+  `mitra_kerja_sama` varchar(255) NOT NULL,
+  `sumber` varchar(100) DEFAULT NULL,
+  `durasi` int(11) DEFAULT NULL,
+  `jumlah_dana` int(11) DEFAULT 0,
+  `link_bukti` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `deleted_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_4c1`),
+  KEY `id_4a2` (`id_4a2`),
+  CONSTRAINT `4c1_kerjasama_pkm_ibfk_1` FOREIGN KEY (`id_4a2`) REFERENCES `4a2_pkm_dtpr` (`id_4a2`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `4c2_diseminasi_hasil_pkm`
+DROP TABLE IF EXISTS `4c2_diseminasi_hasil_pkm`;
+CREATE TABLE `4c2_diseminasi_hasil_pkm` (
+  `id_4c2` int(11) NOT NULL AUTO_INCREMENT,
+  `id_4a2` int(11) NOT NULL,
+  `id_tahun` int(11) NOT NULL,
+  `judul_diseminasi` varchar(255) NOT NULL,
+  `tingkat_diseminasi` varchar(100) DEFAULT NULL,
+  `link_bukti` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `deleted_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_4c2`),
+  KEY `id_4a2` (`id_4a2`),
+  CONSTRAINT `4c2_diseminasi_hasil_pkm_ibfk_1` FOREIGN KEY (`id_4a2`) REFERENCES `4a2_pkm_dtpr` (`id_4a2`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `4c3_perolehan_hki_pkm`
+DROP TABLE IF EXISTS `4c3_perolehan_hki_pkm`;
+CREATE TABLE `4c3_perolehan_hki_pkm` (
+  `id_4c3` int(11) NOT NULL AUTO_INCREMENT,
+  `id_4a2` int(11) NOT NULL,
+  `id_tahun` int(11) NOT NULL,
+  `judul_hki` varchar(255) NOT NULL,
+  `jenis_hki` varchar(100) NOT NULL,
+  `link_bukti` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `deleted_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_4c3`),
+  KEY `id_4a2` (`id_4a2`),
+  CONSTRAINT `4c3_perolehan_hki_pkm_ibfk_1` FOREIGN KEY (`id_4a2`) REFERENCES `4a2_pkm_dtpr` (`id_4a2`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+

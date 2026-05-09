@@ -18,7 +18,7 @@ const ModelPkm = {
         // Ambil data relasi untuk tiap pkm
         for (let row of rows) {
             const [kerjasama] = await db.execute('SELECT * FROM `4c1_kerjasama_pkm` WHERE id_4a2 = ?', [row.id_4a2]);
-            const [publikasi] = await db.execute('SELECT * FROM `4c2_publikasi_pkm` WHERE id_4a2 = ?', [row.id_4a2]);
+            const [publikasi] = await db.execute('SELECT * FROM `4c2_diseminasi_hasil_pkm` WHERE id_4a2 = ?', [row.id_4a2]);
             const [hki] = await db.execute('SELECT * FROM `4c3_perolehan_hki_pkm` WHERE id_4a2 = ?', [row.id_4a2]);
             
             row.kerjasama = kerjasama;
