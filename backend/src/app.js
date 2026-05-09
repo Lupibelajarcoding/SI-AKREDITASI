@@ -50,6 +50,18 @@ const route2b1 = require('./routes/prodi/2b1_isi_pembelajaran');
 const route2b2 = require('./routes/prodi/2b2_pemetaan_cpl_pl');
 const route2b3 = require('./routes/prodi/2b3_peta_pemenuhan_cpl');
 
+// Import Routes LPPM
+const lppmRoadmap = require('./routes/lppm/roadmap_lppm');
+const lppmPenelitian = require('./routes/lppm/3a2_penelitian_dtpr');
+const lppmKerjasama = require('./routes/lppm/3c1_kerjasama_penelitian');
+const lppmPublikasi = require('./routes/lppm/3c2_publikasi_penelitian');
+const lppmHki = require('./routes/lppm/3c3_perolehan_hki');
+
+const lppmPkm = require('./routes/lppm/4a2_pkm_dtpr');
+const lppmKerjasamaPkm = require('./routes/lppm/4c1_kerjasama_pkm');
+const lppmPublikasiPkm = require('./routes/lppm/4c2_publikasi_pkm');
+const lppmHkiPkm = require('./routes/lppm/4c3_perolehan_hki_pkm');
+
 // 2. Middleware Global
 app.use(cors()); 
 app.use(express.json()); 
@@ -100,6 +112,18 @@ app.use('/api/kemahasiswaan/2d-rekognisi', route2d);
 app.use('/api/prodi/2b1-isi-pembelajaran', route2b1);
 app.use('/api/prodi/2b2-pemetaan-cpl', route2b2);
 app.use('/api/prodi/2b3-peta-pemenuhan', route2b3);
+
+// Routes LPPM
+app.use('/api/lppm/roadmap-lppm', lppmRoadmap);
+app.use('/api/lppm/3a2-penelitian-dtpr', lppmPenelitian);
+app.use('/api/lppm/3c1-kerjasama-penelitian', lppmKerjasama);
+app.use('/api/lppm/3c2-publikasi-penelitian', lppmPublikasi);
+app.use('/api/lppm/3c3-perolehan-hki', lppmHki);
+
+app.use('/api/lppm/4a2-pkm-dtpr', lppmPkm);
+app.use('/api/lppm/4c1-kerjasama-pkm', lppmKerjasamaPkm);
+app.use('/api/lppm/4c2-publikasi-pkm', lppmPublikasiPkm);
+app.use('/api/lppm/4c3-perolehan-hki-pkm', lppmHkiPkm);
 
 // 4. Root Endpoint (Checking Status)
 app.get('/', (req, res) => {
