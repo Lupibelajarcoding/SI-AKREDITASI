@@ -119,6 +119,24 @@ app.use('/api/prodi/2b1-isi-pembelajaran', route2b1);
 app.use('/api/prodi/2b2-pemetaan-cpl', route2b2);
 app.use('/api/prodi/2b3-peta-pemenuhan', route2b3);
 
+// Routes PMB (Tabel 2.A.1)
+app.use('/api/pmb/2a1-data-mahasiswa', route2a1_pmb);
+
+// Routes ALA (Tabel 2.A.1)
+app.use('/api/ala/2a1-data-mahasiswa', route2a1_ala);
+
+// Routes LPPM
+app.use('/api/lppm/roadmap-lppm', lppmRoadmap);
+app.use('/api/lppm/3a2-penelitian-dtpr', lppmPenelitian);
+app.use('/api/lppm/3c1-kerjasama-penelitian', lppmKerjasama);
+app.use('/api/lppm/3c2-publikasi-penelitian', lppmPublikasi);
+app.use('/api/lppm/3c3-perolehan-hki', lppmHki);
+
+app.use('/api/lppm/4a2-pkm-dtpr', lppmPkm);
+app.use('/api/lppm/4c1-kerjasama-pkm', lppmKerjasamaPkm);
+app.use('/api/lppm/4c2-publikasi-pkm', lppmPublikasiPkm);
+app.use('/api/lppm/4c3-perolehan-hki-pkm', lppmHkiPkm);
+
 // 4. Root Endpoint (Checking Status)
 app.get('/', (req, res) => {
     res.json({
