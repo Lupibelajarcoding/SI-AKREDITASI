@@ -1420,3 +1420,15 @@ CREATE TABLE `4c3_perolehan_hki_pkm` (
   CONSTRAINT `4c3_perolehan_hki_pkm_ibfk_1` FOREIGN KEY (`id_4a2`) REFERENCES `4a2_pkm_dtpr` (`id_4a2`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+-- =========================================================
+-- ADDITION: LPPM Foreign Keys to Master Tables (Dosen, Prodi, Tahun)
+-- =========================================================
+ALTER TABLE oadmap_lppm ADD CONSTRAINT k_roadmap_prodi FOREIGN KEY (id_prodi) REFERENCES prodi (id_prodi) ON UPDATE CASCADE;
+ALTER TABLE oadmap_lppm ADD CONSTRAINT k_roadmap_tahun FOREIGN KEY (id_tahun) REFERENCES 	ahun_akademik (id_tahun) ON UPDATE CASCADE;
+
+ALTER TABLE 3a2_penelitian_dtpr ADD CONSTRAINT k_3a2_dosen FOREIGN KEY (id_dosen) REFERENCES dosen (id_dosen) ON UPDATE CASCADE;
+ALTER TABLE 3a2_penelitian_dtpr ADD CONSTRAINT k_3a2_tahun FOREIGN KEY (id_tahun) REFERENCES 	ahun_akademik (id_tahun) ON UPDATE CASCADE;
+
+ALTER TABLE 4a2_pkm_dtpr ADD CONSTRAINT k_4a2_dosen FOREIGN KEY (id_dosen) REFERENCES dosen (id_dosen) ON UPDATE CASCADE;
+ALTER TABLE 4a2_pkm_dtpr ADD CONSTRAINT k_4a2_tahun FOREIGN KEY (id_tahun) REFERENCES 	ahun_akademik (id_tahun) ON UPDATE CASCADE;
