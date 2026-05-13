@@ -16,6 +16,7 @@ const mataKuliahRoutes = require('./routes/master/mata_kuliah');
 const profilLulusanRoutes = require('./routes/master/profil_lulusan');
 const cplRoutes = require('./routes/master/cpl');
 const cpmkRoutes = require('./routes/master/cpmk');
+const bentukPembelajaranRoutes = require('./routes/master/bentuk_pembelajaran');
 
 // Import Routes Upps
 const route1a1 = require('./routes/upps/1a1_pimpinan_dan_tupoksi');
@@ -49,6 +50,7 @@ const route2d = require('./routes/kemahasiswaan/2d_rekognisi');
 const route2b1 = require('./routes/prodi/2b1_isi_pembelajaran');
 const route2b2 = require('./routes/prodi/2b2_pemetaan_cpl_pl');
 const route2b3 = require('./routes/prodi/2b3_peta_pemenuhan_cpl');
+const route2c = require('./routes/prodi/2c_fleksibilitas_pembelajaran');
 
 // Import Routes LPPM
 const lppmRoadmap = require('./routes/lppm/roadmap_lppm');
@@ -88,6 +90,7 @@ app.use('/api/master/mata-kuliah', mataKuliahRoutes);
 app.use('/api/master/profil-lulusan', profilLulusanRoutes);
 app.use('/api/master/cpl', cplRoutes);
 app.use('/api/master/cpmk', cpmkRoutes);
+app.use('/api/master/bentuk-pembelajaran', bentukPembelajaranRoutes);
 
 // Routes Upps
 app.use('/api/upps/1a1-pimpinan', route1a1); 
@@ -120,6 +123,7 @@ app.use('/api/kemahasiswaan/2d-rekognisi', route2d);
 app.use('/api/prodi/2b1-isi-pembelajaran', route2b1);
 app.use('/api/prodi/2b2-pemetaan-cpl', route2b2);
 app.use('/api/prodi/2b3-peta-pemenuhan', route2b3);
+app.use('/api/prodi/2c-fleksibilitas', route2c);
 
 // Routes PMB (Tabel 2.A.1)
 app.use('/api/pmb/2a1-data-mahasiswa', route2a1_pmb);
