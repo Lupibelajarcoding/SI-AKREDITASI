@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const mataKuliahController = require('../../controllers/master/mata_kuliah');
+const mataKuliahController = require('../../controllers/prodi/mata_kuliah');
 
 const { verifyToken, authorize } = require('../../middlewares/auth');
 const { UNITS } = require('../../config/permissions');

@@ -1,4 +1,4 @@
-const ModelBentuk = require('../../models/master/bentuk_pembelajaran');
+const ModelBentuk = require('../../models/prodi/bentuk_pembelajaran');
 
 const controllerBentuk = {
     index: async (req, res) => {

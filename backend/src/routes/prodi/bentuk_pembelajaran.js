@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const controllerBentuk = require('../../controllers/master/bentuk_pembelajaran');
+const controllerBentuk = require('../../controllers/prodi/bentuk_pembelajaran');
 const { verifyToken, authorize } = require('../../middlewares/auth');
 
-router.use(verifyToken, authorize('ADMIN')); // Hanya admin yang boleh edit master
+router.use(verifyToken, authorize('PRODI', 'ADMIN')); // Prodi & Admin boleh mengisi
 
 router.get('/', controllerBentuk.index);
 router.get('/:id', controllerBentuk.show);
