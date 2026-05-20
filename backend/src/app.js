@@ -62,11 +62,13 @@ const lppmKerjasamaPkm = require('./routes/lppm/4c1_kerjasama_pkm');
 const lppmPublikasiPkm = require('./routes/lppm/4c2_publikasi_pkm');
 const lppmHkiPkm = require('./routes/lppm/4c3_perolehan_hki_pkm');
 
-// Import Routes PMB (Kriteria 2.A.1)
+// Import Routes PMB
 const route2a1_pmb = require('./routes/pmb/2a1_data_mahasiswa');
+const route2a2 = require('./routes/pmb/2a2_keragaman_asal_maba');
 
-// Import Routes ALA (Kriteria 2.A.1)
+// Import Routes ALA
 const route2a1_ala = require('./routes/ala/2a1_data_mahasiswa');
+const route2a3_ala = require('./routes/ala/2a3_kondisi_mahasiswa');
 
 // 2. Middleware Global
 app.use(cors({
@@ -123,10 +125,11 @@ app.use('/api/prodi/2b3-peta-pemenuhan', route2b3);
 
 // Routes PMB (Tabel 2.A.1)
 app.use('/api/pmb/2a1-data-mahasiswa', route2a1_pmb);
+app.use('/api/pmb/2a2-keragaman-asal', route2a2);
 
 // Routes ALA (Tabel 2.A.1)
 app.use('/api/ala/2a1-data-mahasiswa', route2a1_ala);
-
+app.use('/api/ala/2a3-kondisi-mahasiswa', route2a3_ala);
 // Routes LPPM
 app.use('/api/lppm/roadmap-lppm', lppmRoadmap);
 app.use('/api/lppm/3a2-penelitian-dtpr', lppmPenelitian);
