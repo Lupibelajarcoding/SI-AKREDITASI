@@ -12,15 +12,18 @@ const tendikRoutes = require('./routes/master/tendikRoutes');
 const userRoutes = require('./routes/master/userRoutes');
 const prodiRoutes = require('./routes/master/prodiRoutes');
 const tahunAkademikRoutes = require('./routes/master/tahunAkademikRoutes');
-const mataKuliahRoutes = require('./routes/master/mata_kuliah');
-const profilLulusanRoutes = require('./routes/master/profil_lulusan');
-const cplRoutes = require('./routes/master/cpl');
-const cpmkRoutes = require('./routes/master/cpmk');
+const mataKuliahRoutes = require('./routes/prodi/mata_kuliah');
+const profilLulusanRoutes = require('./routes/prodi/profil_lulusan');
+const cplRoutes = require('./routes/prodi/cpl');
+const cpmkRoutes = require('./routes/prodi/cpmk');
+const bentukPembelajaranRoutes = require('./routes/prodi/bentuk_pembelajaran');
+const unitKerjaRoutes = require('./routes/master/unit_kerja');
 
 // Import Routes Upps
 const route1a1 = require('./routes/upps/1a1_pimpinan_dan_tupoksi');
 const route1a4 = require('./routes/upps/1a4_beban_dtpr');
 const route3a3 = require('./routes/upps/3a3_pengembangan_dtpr');
+const route5_1_sisfo = require('./routes/sisfo/5_1_sistem_tata_kelola');
 const route6 = require('./routes/upps/6_visi_misi');
 
 // import Routes Tpm
@@ -49,6 +52,7 @@ const route2d = require('./routes/kemahasiswaan/2d_rekognisi');
 const route2b1 = require('./routes/prodi/2b1_isi_pembelajaran');
 const route2b2 = require('./routes/prodi/2b2_pemetaan_cpl_pl');
 const route2b3 = require('./routes/prodi/2b3_peta_pemenuhan_cpl');
+const route2c = require('./routes/prodi/2c_fleksibilitas_pembelajaran');
 
 // Import Routes LPPM
 const lppmRoadmap = require('./routes/lppm/roadmap_lppm');
@@ -86,15 +90,14 @@ app.use('/api/master/tendik', tendikRoutes);
 app.use('/api/master/users', userRoutes);
 app.use('/api/master/prodi', prodiRoutes);
 app.use('/api/master/tahun-akademik', tahunAkademikRoutes);
-app.use('/api/master/mata-kuliah', mataKuliahRoutes);
-app.use('/api/master/profil-lulusan', profilLulusanRoutes);
-app.use('/api/master/cpl', cplRoutes);
-app.use('/api/master/cpmk', cpmkRoutes);
+// Data isian ini dipindah ke blok Prodi
+app.use('/api/master/unit-kerja', unitKerjaRoutes);
 
 // Routes Upps
 app.use('/api/upps/1a1-pimpinan', route1a1); 
 app.use('/api/upps/1a4-beban', route1a4);
 app.use('/api/upps/3a3-pengembangan', route3a3);
+app.use('/api/sisfo/5-1-sistem-tata-kelola', route5_1_sisfo);
 app.use('/api/upps/6-visi-misi', route6);
 
 // Routes Tpm
@@ -122,6 +125,12 @@ app.use('/api/kemahasiswaan/2d-rekognisi', route2d);
 app.use('/api/prodi/2b1-isi-pembelajaran', route2b1);
 app.use('/api/prodi/2b2-pemetaan-cpl', route2b2);
 app.use('/api/prodi/2b3-peta-pemenuhan', route2b3);
+app.use('/api/prodi/2c-fleksibilitas', route2c);
+app.use('/api/prodi/mata-kuliah', mataKuliahRoutes);
+app.use('/api/prodi/profil-lulusan', profilLulusanRoutes);
+app.use('/api/prodi/cpl', cplRoutes);
+app.use('/api/prodi/cpmk', cpmkRoutes);
+app.use('/api/prodi/bentuk-pembelajaran', bentukPembelajaranRoutes);
 
 // Routes PMB (Tabel 2.A.1)
 app.use('/api/pmb/2a1-data-mahasiswa', route2a1_pmb);

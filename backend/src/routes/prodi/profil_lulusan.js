@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const profilLulusanController = require('../../controllers/master/profil_lulusan');
+const profilLulusanController = require('../../controllers/prodi/profil_lulusan');
 
 const { verifyToken, authorize } = require('../../middlewares/auth');
 const { UNITS } = require('../../config/permissions');
