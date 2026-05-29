@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SI-Akreditasi - Manajemen Buku Panduan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Quill.js untuk Rich Text Editor (Bisa masukin gambar) -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .ql-container { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; background: white; border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem; }
+        .ql-toolbar { background: #f1f5f9; border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem; border-color: #e2e8f0 !important; }
+        .ql-container.ql-snow { border-color: #e2e8f0 !important; height: 300px; }
+        
+        /* Render konten HTML Panduan */
+        .content-renderer h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .content-renderer h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .content-renderer p { margin-bottom: 0.5rem; line-height: 1.6; }
+        .content-renderer ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.5rem; }
+        .content-renderer ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 0.5rem; }
+        .content-renderer img { max-width: 100%; height: auto; border-radius: 0.5rem; margin: 1rem 0; border: 1px solid #e2e8f0; }
+        
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; }
+        th { background-color: #f1f5f9; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: #475569; }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- SCREEN 1: LOGIN -->
+    <div id="login-screen" class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white p-10 rounded-[2rem] shadow-2xl w-full max-w-md border-t-8 border-indigo-600">
+            <div class="flex justify-center mb-6">
+                <div class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-lg">ST</div>
+            </div>
+            <h1 class="text-2xl font-black text-center mb-2 uppercase tracking-tighter">Buku Panduan Sistem</h1>
+            <p class="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8">SI-Akreditasi LAM-INFOKOM 2.1</p>
+            
+            <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Username Unit</label>
+                    <input type="text" id="username" required placeholder="admin / pmb / lppm" class="w-full p-4 border rounded-xl bg-slate-50 font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Password</label>
+                    <input type="password" id="password" required placeholder="********" class="w-full p-4 border rounded-xl bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <button type="submit" id="btn-login" class="w-full bg-indigo-600 text-white font-black py-4 rounded-xl shadow-lg hover:bg-indigo-700 active:scale-95 transition uppercase text-xs tracking-widest mt-2">Masuk Sistem</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: DASHBOARD PANDUAN -->
+    <div id="main-content" class="hidden p-6 max-w-7xl mx-auto">
+        
+        <!-- Header -->
+        <div class="bg-white rounded-[2rem] shadow-lg border border-slate-200 p-6 mb-8 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-5">
+                <div class="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-md">📖</div>
+                <div>
+                    <h1 class="text-xl font-black uppercase tracking-tighter text-slate-800">Pusat Bantuan & Panduan</h1>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                        Akun: <span id="user-info" class="text-indigo-600"></span> | 
+                        Akses: <span id="display-role" class="text-slate-800 bg-slate-100 px-2 py-0.5 rounded"></span>
+                    </p>
+                </div>
+            </div>
+            <button onclick="handleLogout()" class="bg-red-50 text-red-600 px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-100 transition border border-red-100">LOGOUT</button>
+        </div>
+
+        <!-- VIEW ADMIN: BISA CRUD -->
+        <div id="admin-view" class="hidden grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Form Buat/Edit Panduan -->
+            <div class="col-span-12 lg:col-span-5 bg-white p-6 rounded-[2rem] shadow-xl border border-slate-200 h-fit">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-sm font-black text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                        <span class="w-2 h-6 bg-indigo-600 rounded-full"></span>
+                        <span id="form-title">Tulis Panduan Baru</span>
+                    </h2>
+                    <button id="btn-cancel" onclick="resetForm()" class="hidden text-[10px] bg-slate-100 text-slate-500 px-3 py-1 rounded-full font-bold uppercase hover:bg-slate-200">Batal Edit</button>
+                </div>
+                
+                <form id="panduan-form" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Target Unit / Bidang</label>
+                        <select id="id_unit" class="w-full p-3 border rounded-xl text-sm font-bold bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-500">
+                            <!-- Mock Data Unit (Akan lebih baik jika ditarik dari API master unit) -->
+                            <option value="3">PMB (Penerimaan Mahasiswa Baru)</option>
+                            <option value="4">ALA (Akademik & Layanan Alumni)</option>
+                            <option value="5">LPPM (Penelitian & PkM)</option>
+                            <option value="11">PRODI (Program Studi)</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Judul Panduan</label>
+                        <input type="text" id="judul" required placeholder="Contoh: Cara Mengisi Tabel 2.A.2" class="w-full p-3 border rounded-xl text-sm font-bold bg-white outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Konten (Bisa Paste Gambar)</label>
+                        <!-- Wadah Quill Editor -->
+                        <div id="editor-container"></div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Link Lampiran (Opsional)</label>
+                        <input type="url" id="link_lampiran" placeholder="https://youtube.com/... atau Drive" class="w-full p-3 border rounded-xl text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <button type="button" onclick="savePanduan()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:bg-indigo-700 active:scale-95 transition mt-4">Simpan Panduan</button>
+                </form>
+            </div>
+
+            <!-- Tabel Daftar Panduan -->
+            <div class="col-span-12 lg:col-span-7 bg-white p-6 rounded-[2rem] shadow-xl border border-slate-200">
+                <h2 class="text-sm font-black text-slate-700 uppercase tracking-widest mb-6">Daftar Seluruh Panduan</h2>
+                <div class="overflow-x-auto rounded-xl border border-slate-100">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th class="w-[20%]">Target Unit</th>
+                                <th class="w-[50%]">Judul Panduan</th>
+                                <th class="w-[30%] text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="bg-white divide-y divide-slate-100">
+                            <!-- Data dimuat via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW UNIT BIASA: HANYA MEMBACA -->
+        <div id="unit-view" class="hidden space-y-6">
+            <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 mb-8">
+                <h2 class="text-lg font-black text-indigo-800 tracking-tight">Halo, Tim <span id="welcome-unit" class="uppercase"></span>! 👋</h2>
+                <p class="text-xs text-indigo-600 font-medium mt-1">Berikut adalah kumpulan panduan dan standar operasional khusus untuk bidang Anda. Silakan ikuti langkah-langkah di bawah ini untuk mengisi data akreditasi.</p>
+            </div>
+
+            <!-- Tempat memunculkan kartu-kartu panduan -->
+            <div id="panduan-cards-container" class="grid grid-cols-1 gap-8">
+                <!-- Data dimuat via JS -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="modal-alert" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-8 shadow-2xl border-t-8 border-indigo-600">
+            <h3 class="text-xl font-black text-slate-800 text-center mb-2 uppercase tracking-tighter" id="alert-title">Info</h3>
+            <p id="alert-text" class="text-xs text-slate-500 text-center font-medium leading-relaxed mb-8"></p>
+            <button onclick="document.getElementById('modal-alert').classList.add('hidden')" class="w-full bg-slate-900 text-white font-black py-4 rounded-xl text-[10px] uppercase tracking-widest">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:5000/api";
+        let session = { token: null, unit: null, userId: null, username: null };
+        let quillEditor;
+        let currentEditId = null;
+        let allPanduanData = []; // Untuk cache data admin
+
+        window.onload = () => {
+            // Inisialisasi Quill.js Editor
+            quillEditor = new Quill('#editor-container', {
+                theme: 'snow',
+                placeholder: 'Ketik panduan di sini... (Bisa paste screenshot gambar juga lho!)',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                }
+            });
+        };
+
+        // --- AUTH SYSTEM ---
+        async function handleLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    session = { 
+                        token: result.token, 
+                        unit: result.user.unit ? result.user.unit.toUpperCase() : "UNDEFINED", 
+                        username: result.user.username,
+                        userId: result.user.id_user || result.user.id_unit 
+                    };
+                    
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('main-content').classList.remove('hidden');
+                    document.getElementById('display-role').innerText = session.unit;
+                    document.getElementById('user-info').innerText = session.username;
+                    
+                    setupView();
+                } else {
+                    showAlert("Login Gagal", result.message || "Periksa username/password.");
+                }
+            } catch (err) {
+                showAlert("Server Error", "Gagal menghubungi backend di Port 5000.");
+            }
+        }
+
+        function handleLogout() { location.reload(); }
+
+        function showAlert(title, text) {
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-text').innerText = text;
+            document.getElementById('modal-alert').classList.remove('hidden');
+        }
+
+        // --- MENGATUR TAMPILAN (ADMIN vs UNIT) ---
+        function setupView() {
+            if (session.unit === 'ADMIN') {
+                document.getElementById('admin-view').classList.remove('hidden');
+                document.getElementById('admin-view').classList.add('grid');
+                document.getElementById('unit-view').classList.add('hidden');
+                loadDataAdmin();
+            } else {
+                document.getElementById('admin-view').classList.add('hidden');
+                document.getElementById('admin-view').classList.remove('grid');
+                document.getElementById('unit-view').classList.remove('hidden');
+                document.getElementById('welcome-unit').innerText = session.unit;
+                loadDataUnit();
+            }
+        }
+
+        // --- LOGIC UNTUK ADMIN (CRUD) ---
+        async function loadDataAdmin() {
+            try {
+                const res = await fetch(`${API_BASE}/master/panduan`, {
+                    headers: { 'Authorization': `Bearer ${session.token}` }
+                });
+                const result = await res.json();
+                
+                if (result.success) {
+                    allPanduanData = result.data;
+                    const tbody = document.getElementById('admin-table-body');
+                    tbody.innerHTML = '';
+                    
+                    result.data.forEach(p => {
+                        tbody.innerHTML += `
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="font-bold text-indigo-600 uppercase text-xs">${p.nama_unit || 'Unit ID: '+p.id_unit}</td>
+                                <td class="font-semibold text-slate-700">${p.judul}</td>
+                                <td class="text-center flex justify-center gap-2">
+                                    <button onclick="editData(${p.id_panduan})" class="bg-amber-100 text-amber-700 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase hover:bg-amber-200 transition">Edit</button>
+                                    <button onclick="deleteData(${p.id_panduan})" class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase hover:bg-red-600 hover:text-white transition">Hapus</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (err) { console.error("Gagal load data panduan admin"); }
+        }
+
+        // --- STREAMING_CHUNK:Logika Simpan, Edit, Hapus untuk Admin... ---
+        async function savePanduan() {
+            const id_unit = document.getElementById('id_unit').value;
+            const judul = document.getElementById('judul').value;
+            const link_lampiran = document.getElementById('link_lampiran').value;
+            
+            // Mengambil struktur HTML (termasuk gambar base64) dari editor Quill
+            const konten = quillEditor.root.innerHTML;
+
+            if (!judul || konten === '<p><br></p>') {
+                showAlert("Peringatan", "Judul dan Konten panduan tidak boleh kosong.");
+                return;
+            }
+
+            const payload = { id_unit, judul, konten, link_lampiran };
+            
+            // Tentukan method POST (Baru) atau PUT (Edit)
+            const method = currentEditId ? 'PUT' : 'POST';
+            const endpoint = currentEditId ? `${API_BASE}/master/panduan/${currentEditId}` : `${API_BASE}/master/panduan`;
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.token}` },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await res.json();
+                if (result.success) {
+                    showAlert("Sukses", result.message);
+                    resetForm();
+                    loadDataAdmin();
+                } else {
+                    showAlert("Gagal", result.message);
+                }
+            } catch (err) { showAlert("Error", "Gagal menyimpan data ke server."); }
+        }
+
+        function editData(id) {
+            const data = allPanduanData.find(p => p.id_panduan === id);
+            if (!data) return;
+
+            currentEditId = id;
+            document.getElementById('form-title').innerText = "Edit Panduan";
+            document.getElementById('btn-cancel').classList.remove('hidden');
+            
+            document.getElementById('id_unit').value = data.id_unit;
+            document.getElementById('judul').value = data.judul;
+            document.getElementById('link_lampiran').value = data.link_lampiran || "";
+            
+            // Memasukkan tag HTML kembali ke editor
+            quillEditor.root.innerHTML = data.konten;
+        }
+
+        function resetForm() {
+            currentEditId = null;
+            document.getElementById('form-title').innerText = "Tulis Panduan Baru";
+            document.getElementById('btn-cancel').classList.add('hidden');
+            document.getElementById('panduan-form').reset();
+            quillEditor.root.innerHTML = '';
+        }
+
+        async function deleteData(id) {
+            if(confirm("Yakin ingin menghapus panduan ini?")) {
+                try {
+                    await fetch(`${API_BASE}/master/panduan/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${session.token}` }
+                    });
+                    loadDataAdmin();
+                } catch (err) { showAlert("Error", "Gagal menghapus data."); }
+            }
+        }
+
+        // --- STREAMING_CHUNK:Logika Tampilan Render HTML untuk User/Unit... ---
+        // --- LOGIC UNTUK UNIT BIASA (READ ONLY & RENDER HTML) ---
+        async function loadDataUnit() {
+            try {
+                // Catatan: session.userId disini merujuk pada id_unit jika tidak ada. 
+                // Asumsi backend route-nya: /api/master/panduan/unit/:id_unit
+                // Di sistem aslimu, pastikan URL ini menembak id_unit yang benar.
+                const res = await fetch(`${API_BASE}/master/panduan/unit/${session.userId}`, {
+                    headers: { 'Authorization': `Bearer ${session.token}` }
+                });
+                const result = await res.json();
+                
+                const container = document.getElementById('panduan-cards-container');
+                container.innerHTML = '';
+
+                if (result.success && result.data.length > 0) {
+                    result.data.forEach(p => {
+                        container.innerHTML += `
+                            <div class="bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden">
+                                <div class="p-6 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                                    <h3 class="text-xl font-black text-slate-800">${p.judul}</h3>
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">${new Date(p.updated_at || p.created_at).toLocaleDateString('id-ID')}</span>
+                                </div>
+                                <div class="p-8 content-renderer text-sm text-slate-700">
+                                    <!-- RENDER HTML DARI DATABASE DENGAN AMAN DI SINI -->
+                                    ${p.konten}
+                                </div>
+                                ${p.link_lampiran ? `
+                                <div class="px-8 pb-8">
+                                    <a href="${p.link_lampiran}" target="_blank" class="inline-flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-600 hover:text-white transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        Lihat Lampiran Video / File
+                                    </a>
+                                </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = `
+                        <div class="text-center py-16 bg-white rounded-3xl border border-slate-200 border-dashed">
+                            <span class="text-4xl block mb-4">📭</span>
+                            <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">Belum ada panduan untuk unit Anda.</p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                document.getElementById('panduan-cards-container').innerHTML = `<p class="text-red-500 font-bold">Gagal memuat panduan dari server.</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -18,6 +18,8 @@ const cplRoutes = require('./routes/prodi/cpl');
 const cpmkRoutes = require('./routes/prodi/cpmk');
 const bentukPembelajaranRoutes = require('./routes/prodi/bentuk_pembelajaran');
 const unitKerjaRoutes = require('./routes/master/unit_kerja');
+const panduanRoutes = require('./routes/master/buku_panduan');
+
 
 // Import Routes Upps
 const route1a1 = require('./routes/upps/1a1_pimpinan_dan_tupoksi');
@@ -92,6 +94,7 @@ app.use('/api/master/prodi', prodiRoutes);
 app.use('/api/master/tahun-akademik', tahunAkademikRoutes);
 // Data isian ini dipindah ke blok Prodi
 app.use('/api/master/unit-kerja', unitKerjaRoutes);
+app.use('/api/master/panduan', panduanRoutes);
 
 // Routes Upps
 app.use('/api/upps/1a1-pimpinan', route1a1); 
