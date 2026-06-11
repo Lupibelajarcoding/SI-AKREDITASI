@@ -6,15 +6,13 @@ const db = require('../../config/db');
  * Update: Menambahkan kolom jenis_unit (VARCHAR) sesuai request Rhegysa
  */
 const Model1b = {
-    // 1. Ambil data aktif
     findAll: async (id_tahun) => {
         const sql = `
             SELECT 
                 s.*, 
-                COALESCE(u.nama_unit, CONCAT('Unit ID: ', s.id_unit)) AS nama_unit, 
+                (s.auditor_certified + s.auditor_non_certified) AS jumlah_auditor,
                 COALESCE(t.tahun, CONCAT('Tahun ID: ', s.id_tahun)) AS nama_tahun
             FROM \`1b_unit_spmi_dan_sdm\` s
-            LEFT JOIN unit_kerja u ON s.id_unit = u.id_unit
             LEFT JOIN tahun_akademik t ON s.id_tahun = t.id_tahun
             WHERE s.id_tahun = ? AND s.deleted_at IS NULL
         `;
@@ -22,14 +20,12 @@ const Model1b = {
         return rows;
     },
 
-    // 2. Ambil data sampah
     findTrash: async (id_tahun) => {
         const sql = `
             SELECT 
-                s.*, 
-                COALESCE(u.nama_unit, CONCAT('Unit ID: ', s.id_unit)) AS nama_unit
+                s.*,
+                (s.auditor_certified + s.auditor_non_certified) AS jumlah_auditor
             FROM \`1b_unit_spmi_dan_sdm\` s
-            LEFT JOIN unit_kerja u ON s.id_unit = u.id_unit
             WHERE s.id_tahun = ? AND s.deleted_at IS NOT NULL
         `;
         const [rows] = await db.execute(sql, [id_tahun]);
@@ -37,36 +33,34 @@ const Model1b = {
     },
 
     create: async (data) => {
-        const totalAuditor = (parseInt(data.auditor_certified) || 0) + (parseInt(data.auditor_non_certified) || 0);
         const sql = `
             INSERT INTO \`1b_unit_spmi_dan_sdm\` 
-            (jenis_unit, dokumen_spmi, jumlah_auditor, auditor_certified, auditor_non_certified, 
+            (nama_unit_spmi, dokumen_spmi, auditor_certified, auditor_non_certified, 
              frekuensi_audit, bukti_certified_auditor, laporan_audit, 
-             id_unit, id_tahun, created_by) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             unit_spmi, id_tahun, created_by) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         return await db.execute(sql, [
-            data.jenis_unit, // Disimpan sebagai VARCHAR, bebas diisi PT/UPPS dari frontend
-            data.dokumen_spmi, totalAuditor, data.auditor_certified, data.auditor_non_certified,
+            data.nama_unit_spmi, 
+            data.dokumen_spmi, data.auditor_certified, data.auditor_non_certified,
             data.frekuensi_audit, data.bukti_certified_auditor, data.laporan_audit,
-            data.id_unit, data.id_tahun, data.created_by
+            data.unit_spmi, data.id_tahun, data.created_by
         ]);
     },
 
     update: async (id, data) => {
-        const totalAuditor = (parseInt(data.auditor_certified) || 0) + (parseInt(data.auditor_non_certified) || 0);
         const sql = `
             UPDATE \`1b_unit_spmi_dan_sdm\` 
-            SET jenis_unit = ?, dokumen_spmi = ?, jumlah_auditor = ?, auditor_certified = ?, 
+            SET nama_unit_spmi = ?, dokumen_spmi = ?, auditor_certified = ?, 
                 auditor_non_certified = ?, frekuensi_audit = ?, 
                 bukti_certified_auditor = ?, laporan_audit = ?, 
-                id_unit = ?, updated_by = ?
+                unit_spmi = ?, updated_by = ?
             WHERE id_unit_spmi = ?
         `;
         return await db.execute(sql, [
-            data.jenis_unit, data.dokumen_spmi, totalAuditor, data.auditor_certified, data.auditor_non_certified,
+            data.nama_unit_spmi, data.dokumen_spmi, data.auditor_certified, data.auditor_non_certified,
             data.frekuensi_audit, data.bukti_certified_auditor, data.laporan_audit,
-            data.id_unit, data.updated_by, id
+            data.unit_spmi, data.updated_by, id
         ]);
     },
 
